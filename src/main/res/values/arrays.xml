@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="toppings_array">
+        <item>Pepperoni</item>
+        <item>Beef</item>
+        <item>Pork Sausage</item>
+        <item>Italian Sausage</item>
+        <item>Sliced Italian Sausage</item>
+        <item>Shrimp</item>
+        <item>Fresh Tomato</item>
+        <item>Mushroom</item>
+        <item>White Onion</item>
+        <item>Red Onion</item>
+        <item>Green Pepper</item>
+        <item>Jalapeno</item>
+        <item>Pepperoncini Pepper</item>
+        <item>Meatballs</item>
+        <item>Italian Chicken</item>
+        <item>Roasted Red Pepper</item>
+        <item>Black Olive</item>
+        <item>Real Bacon Pieces</item>
+        <item>Canadian Bacon</item>
+        <item>Salami</item>
+        <item>Green Olive</item>
+        <item>Pineapple</item>
+        <item>Sauerkraut</item>
+        <item>Spinach</item>
+        <item>Extra Cheese</item>
+        <item>Extra Dressing</item>
+    </string-array>
+
+    <string-array name="half_toppings_array">
+        <item>1/2 Pepperoni</item>
+        <item>1/2 Beef</item>
+        <item>1/2 Pork Sausage</item>
+        <item>1/2 Italian Sausage</item>
+        <item>1/2 Sliced Italian Sausage</item>
+        <item>1/2 Shrimp</item>
+        <item>1/2 Fresh Tomato</item>
+        <item>1/2 Mushroom</item>
+        <item>1/2 White Onion</item>
+        <item>1/2 Red Onion</item>
+        <item>1/2 Green Pepper</item>
+        <item>1/2 Jalapeno</item>
+        <item>1/2 Pepperoncini Pepper</item>
+        <item>1/2 Meatballs</item>
+        <item>1/2 Italian Chicken</item>
+        <item>1/2 Roasted Red Pepper</item>
+        <item>1/2 Black Olive</item>
+        <item>1/2 Real Bacon Pieces</item>
+        <item>1/2 Canadian Bacon</item>
+        <item>1/2 Salami</item>
+        <item>1/2 Green Olive</item>
+        <item>1/2 Pineapple</item>
+        <item>1/2 Sauerkraut</item>
+        <item>1/2 Spinach</item>
+        <item>1/2 Extra Cheese</item>
+        <item>1/2 Extra Dressing</item>
+    </string-array>
+
+    <string-array name="crust_array">
+        <item>Original Crust</item>
+        <item>Thin Crust</item>
+        <item>Sicilian Crust</item>
+    </string-array>
+
+    <string-array name="size_array">
+        <item>Mini 7\"</item>
+        <item>Small 10\"</item>
+        <item>Medium 12\"</item>
+        <item>Large 14\"</item>
+        <item>Crazy 18\"</item>
+    </string-array>
+
+    <string-array name="appetizer_size_large">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="appetizer_size_medium">
+        <item>Small</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="appetizer_size_small">
+        <item>single</item>
+    </string-array>
+
+    <string-array name="pasta_size_array">
+        <item>Individual (4)</item>
+        <item>Family (8)</item>
+    </string-array>
+
+    <string-array name="desert_size_array">
+        <item>Mini</item>
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+
+    <integer-array name="topping_price_NO">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
+    <integer-array name="topping_price_ADD">
+        <item>69</item>
+        <item>169</item>
+        <item>199</item>
+        <item>225</item>
+        <item>225</item>
+    </integer-array>
+
+    <integer-array name="signature_price">
+        <item>799</item>
+        <item>1399</item>
+        <item>1749</item>
+        <item>1999</item>
+        <item>2399</item>
+    </integer-array>
+
+     <integer-array name="specialty_price">
+        <item>699</item>
+        <item>1249</item>
+        <item>1599</item>
+        <item>1849</item>
+        <item>2249</item>
+    </integer-array>
+
+    <integer-array name="create_your_own_price">
+        <item>349</item>
+        <item>699</item>
+        <item>999</item>
+        <item>1199</item>
+        <item>1599</item>
+    </integer-array>
+
+    <integer-array name="calzone_price">
+        <item>899</item>
+        <item>1499</item>
+    </integer-array>
+
+     <integer-array name="crust_price">
+        <item>0</item>
+        <item>0</item>
+        <item>100</item>
+    </integer-array>
+
+    <integer-array name="appetizer_small_price">
+        <item>599</item>
+        <item>599</item>
+        <item>399</item>
+        <item>599</item>
+        <item>599</item>
+        <item>799</item>
+        <item>799</item>
+        <item>399</item>
+        <item>599</item>
+        <item>649</item>
+        <item>649</item>
+    </integer-array>
+
+    <integer-array name="appetizer_medium_price">
+        <item>999</item>
+        <item>999</item>
+        <item>599</item>
+        <item>799</item>
+        <item>0</item>
+        <item>999</item>
+        <item>999</item>
+        <item>599</item>
+        <item>799</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
+    <integer-array name="appetizer_large_price">
+        <item>1699</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1299</item>
+        <item>1299</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
+
+    <integer-array name="desert_price_array">
+        <item>399</item>
+        <item>699</item>
+        <item>999</item>
+        <item>1299</item>
+    </integer-array>
+
+    <integer-array name="cookie_price">
+        <item>999</item>
+    </integer-array>
+
+    <integer-array name="salad_price_array">
+        <item>299</item>
+        <item>799</item>
+    </integer-array>
+
+    <integer-array name="pasta_individual_price">
+        <item>799</item>
+        <item>849</item>
+        <item>799</item>
+        <item>949</item>
+        <item>949</item>
+        <item>799</item>
+        <item>899</item>
+        <item>799</item>
+        <item>899</item>
+        <item>749</item>
+        <item>799</item>
+        <item>749</item>
+        <item>899</item>
+    </integer-array>
+
+    <integer-array name="pasta_family_price">
+        <item>2049</item>
+        <item>2049</item>
+        <item>2049</item>
+        <item>2299</item>
+        <item>2299</item>
+        <item>2049</item>
+        <item>2199</item>
+        <item>2049</item>
+        <item>2199</item>
+        <item>1949</item>
+        <item>2049</item>
+        <item>1949</item>
+        <item>2199</item>
+    </integer-array>
+
+    <integer-array name="sandwich_price_array">
+        <item>799</item>
+        <item>799</item>
+        <item>799</item>
+        <item>729</item>
+        <item>799</item>
+        <item>729</item>
+        <item>799</item>
+        <item>729</item>
+        <item>699</item>
+        <item>699</item>
+        <item>699</item>
+        <item>899</item>
+    </integer-array>
+
+</resources>

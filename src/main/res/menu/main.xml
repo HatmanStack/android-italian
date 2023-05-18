@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="patience.cj.gambino.MainActivity">
+
+    <item
+        android:id="@+id/pizza_menu"
+        android:orderInCategory="1"
+        android:title="@string/action_pizza" />
+
+    <item
+        android:id="@+id/sandwiches_menu"
+        android:orderInCategory="2"
+        android:title="@string/action_sandwiches" />
+
+    <item
+        android:id="@+id/appetizers_menu"
+        android:orderInCategory="3"
+        android:title="@string/action_appetizers" />
+
+    <item
+        android:id="@+id/pastas_menu"
+        android:orderInCategory="5"
+        android:title="@string/action_pastas" />
+
+    <item
+        android:id="@+id/salads_menu"
+        android:orderInCategory="6"
+        android:title="@string/action_salads" />
+
+    <item
+        android:id="@+id/deserts_menu"
+        android:orderInCategory="7"
+        android:title="@string/action_deserts" />
+
+    <item
+        android:id="@+id/order_menu"
+        android:orderInCategory="9"
+        android:title="@string/action_order" />
+
+ <item
+        android:id="@+id/show_map"
+        android:orderInCategory="10"
+        android:title="@string/show_map" />
+
+
+</menu>

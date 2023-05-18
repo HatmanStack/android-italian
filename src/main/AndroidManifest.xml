@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="gemenielabs.italian">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:launchMode="singleTop"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="gemenielabs.italian.MainActivity"
+                    android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="gemenielabs.italian.NutritionInfoActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="gemenielabs.italian.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gemenielabs.italian.MainActivity" />
+        </activity>
+        <activity
+            android:name="gemenielabs.italian.OrderActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="gemenielabs.italian.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gemenielabs.italian.MainActivity" />
+        </activity>
+        <activity android:name="gemenielabs.italian.CheckoutActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyACUQsBoQ4Fx5eogS0fZN_6nd7Gwtv7IZU" />
+        <meta-data
+            android:name="com.google.android.gms.version" />
+
+
+        <activity
+            android:name="gemenielabs.italian.MapFragmentActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="gemenielabs.italian.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gemenielabs.italian.MainActivity" />
+        </activity>
+        <activity
+            android:name="gemenielabs.italian.ContactActvity"
+            android:label="@string/app_name"
+            android:parentActivityName="gemenielabs.italian.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gemenielabs.italian.MainActivity" />
+        </activity>
+
+        <service android:name="gemenielabs.italian.Data.LocationHelper" />
+
+        <receiver android:name="gemenielabs.italian.DownloadLocationReceiver" />
+
+    </application>
+
+</manifest>
