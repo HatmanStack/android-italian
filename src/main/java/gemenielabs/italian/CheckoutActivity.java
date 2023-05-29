@@ -28,9 +28,7 @@ import gemenielabs.italian.Adapters.AllMenuItemsAdapter;
 import gemenielabs.italian.Adapters.OrderSummaryAdapter;
 
 
-public class CheckoutActivity extends Activity
-    implements OrderSummaryAdapter.ListViewClickListener{
-
+public class CheckoutActivity extends Activity implements OrderSummaryAdapter.ListViewClickListener {
 
     SharedPreferences sharedPreferences;
     OrderSummaryAdapter myadapter;
@@ -41,8 +39,9 @@ public class CheckoutActivity extends Activity
     private String listItem;
     private TextView total;
     private int cost;
-    public static String StartMapFromCheckOut = "StartMapFromCheckOut";
-    private static int StartMapFromCheckOutID = 9001;
+
+    public static final String StartMapFromCheckOut = "StartMapFromCheckOut";
+    private static final int StartMapFromCheckOutID = 9001;
     public static final String ITEM_STRING = "item_strings";
     public static final String ITEM_COST = "item_cost";
     public static final String NUMBER_OF_ITEMS = "number_of_items";
@@ -51,29 +50,26 @@ public class CheckoutActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
+        // Retrieve intent data and find views
         Intent intent = getIntent();
         total = findViewById(R.id.summary_total);
-        findViewById(R.id.clear_list_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearList(view);
-            }
-        });
-        findViewById(R.id.checkout_order_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startDeliveryCarryOut(view);
-            }
-        });
 
+        // Set click listeners for buttons
+        findViewById(R.id.clear_list_button).setOnClickListener(this::clearList);
+        findViewById(R.id.checkout_order_button).setOnClickListener(this::startDeliveryCarryOut);
+
+        // Retrieve data from SharedPreferences
         sharedPreferences = this.getSharedPreferences("prototype.prototype.gambinos", MODE_PRIVATE);
         int itemNumber = sharedPreferences.getInt(NUMBER_OF_ITEMS, 0);
         for (int i = 0; i < itemNumber ; i++) {
             costList.add(sharedPreferences.getInt(ITEM_COST + i, 0));
             itemList.add(sharedPreferences.getString(ITEM_STRING + i, ""));
         }
-        if(intent.hasExtra(OrderActivity.COMMENTS)){
-            if(intent.getStringExtra(OrderActivity.COMMENTS).length() > 1){
+
+        // Check if intent has extra data
+        if (intent.hasExtra(OrderActivity.COMMENTS)) {
+            if (intent.getStringExtra(OrderActivity.COMMENTS).length() > 1) {
                 comment = intent.getStringExtra(OrderActivity.COMMENTS);
             }
             listItem = intent.getStringExtra(AllMenuItemsAdapter.TITLE);
@@ -82,23 +78,23 @@ public class CheckoutActivity extends Activity
             costList.add(cost);
             buildString();
         }
+
+        // Build and display total string
         totalString(buildTotal());
+
+        // Set adapter for RecyclerView
         getAdapter();
     }
 
-    public void buildString(){
-        String orderString;
-        if(comment != null) {
-            orderString = listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault()) + "\n" + comment;
-
-        } else {
-            orderString = listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault());
-        }
+    public void buildString() {
+        String orderString = (comment != null) ?
+                listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault()) + "\n" + comment :
+                listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault());
         orderString = orderString.replace("order summary", "");
         itemList.add(orderString);
     }
 
-    public int buildTotal(){
+    public int buildTotal() {
         int total = 0;
         for (int i = 0; i < costList.size(); i++) {
             total += costList.get(i);
@@ -106,9 +102,9 @@ public class CheckoutActivity extends Activity
         return total;
     }
 
-    public void totalString(int value){
+    public void totalString(int value) {
         String string = String.valueOf(value);
-        if(string.length() > 2) {
+        if (string.length() > 2) {
             String centsString = string.substring(string.length() - 2);
             String dollarString = string.substring(0, string.length() - 2);
             string = dollarString + "." + centsString;
@@ -117,7 +113,7 @@ public class CheckoutActivity extends Activity
         total.setText(totalNumber);
     }
 
-    public void getAdapter(){
+    public void getAdapter() {
         RecyclerView recyclerView = findViewById(R.id.order_summary_recyclerview);
         myadapter = new OrderSummaryAdapter(this, itemList);
         recyclerView.setAdapter(myadapter);
@@ -131,7 +127,7 @@ public class CheckoutActivity extends Activity
         super.onStop();
     }
 
-    public void saveLists(){
+    public void saveLists() {
         sharedPreferences.edit().putInt(NUMBER_OF_ITEMS, itemList.size()).apply();
         for (int i = 0; i < itemList.size(); i++) {
             sharedPreferences.edit().putInt(ITEM_COST + i, costList.get(i)).apply();
@@ -162,27 +158,11 @@ public class CheckoutActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    public void startDeliveryCarryOut(View v){
-        //Intent intent = new Intent(this, MainActivity.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //startActivity(intent);
-        /**FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        MainActivity.customerLocation = location;
-                        startActivity(new Intent(getApplicationContext(), MapFragmentActivity.class));
-                    }
-                });**/
+    public void startDeliveryCarryOut(View v) {
         startActivity(new Intent(getApplicationContext(), MapFragmentActivity.class));
-
     }
 
-    public void clearList(View v){
+    public void clearList(View v) {
         for (int i = 0; i < itemList.size(); i++) {
             sharedPreferences.edit().putInt(ITEM_COST + i, 0).apply();
             sharedPreferences.edit().putString(ITEM_STRING + i, "").apply();
@@ -193,5 +173,5 @@ public class CheckoutActivity extends Activity
         totalString(0);
         myadapter.notifyDataSetChanged();
     }
-
 }
+

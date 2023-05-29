@@ -1,14 +1,10 @@
 # Italian
 
-This is a proof of concept app for an Italian restaurant.
+This is a proof of concept app for an Italian restaurant. The code is not meant to be used in production.
 
 ## Demo
 
-Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the demo.
-
-## Installation
-
-You can download the application from the Google Play Store by clicking [here](https://play.google.com/store/apps/details?id=gemenielabs.italian).
+Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube demo. You can download the application from the Google Play Store by clicking [here](https://play.google.com/store/apps/details?id=gemenielabs.italian).
 
 ## Features
 

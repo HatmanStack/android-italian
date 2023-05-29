@@ -32,31 +32,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends Activity {
-
-
     private AllMenuItemsAdapter myadapter;
     private RecyclerView menuItemDisplay;
     private DownloadLocationReceiver locationReceiver;
-    public static List titleList;
-    public static List imageList;
-    public static List descriptionList;
+    public static List<String> titleList, imageList, descriptionList;
     public static Location customerLocation;
     public static final String LOCATIONDATA = "locationdata";
     public static final String BROADCASTACTION = "broadcastaction";
     private static final String CUSTOMERLOCATION = "customerlocation";
-    public static final String PHONE = "phone";
-    public static final String ADDRESS = "address";
-    public static final String OPENCLOSE = "open_close";
-    public static final String HOURS = "hours";
-    public static final String LAT = "lat";
-    public static final String LNG = "lng";
-    public static final String PHOTOS = "photo";
-    public static final String NAME = "name";
+    public static final String PHONE = "phone", ADDRESS = "address", OPENCLOSE = "open_close",
+            HOURS = "hours", LAT = "lat", LNG = "lng", PHOTOS = "photo", NAME = "name";
     private Boolean newSave;
     private FusedLocationProviderClient fusedLocationProviderClient;
     int mId;
-    ViewGroup storeInformation;
-    ViewGroup mainFrame;
+    ViewGroup storeInformation, mainFrame;
     public String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE};
 
     @Override
@@ -64,56 +53,44 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.main);
-        NutritionInfo nutritionInfo = new NutritionInfo();
-        nutritionInfo.loadNutritionInformation();
-        localLocationServices();
-        //Location not being saved correctly, default Values of sharedpreferences returning null
-        /**if(customerLocation != null) {
-            saveData();
-        }**/
-        if (getIntent().hasExtra(AllMenuItemsAdapter.ID)) {
-            mId = getIntent().getIntExtra(AllMenuItemsAdapter.ID, 0);
-        } else {
-            mId = R.id.pizza_menu;
-        }
-        getLists();
-        getAdapter();
+        
+        // Load nutrition information
+        new NutritionInfo().loadNutritionInformation();
+        
+        localLocationServices(); // Initialize location services
+
+        // Get the selected menu item ID
+        mId = getIntent().getIntExtra(AllMenuItemsAdapter.ID, R.id.pizza_menu);
+
+        getLists(); // Get the lists based on the selected menu item
+        getAdapter(); // Set up the adapter for the RecyclerView
+
         storeInformation = findViewById(R.id.store_information);
         mainFrame = findViewById(R.id.main_frame);
-        setupTransitions();
+        setupTransitions(); // Set up the animation transitions
     }
 
-    public void localLocationServices(){
-        if(customerLocation == null) {
+    public void localLocationServices() {
+        if (customerLocation == null) {
             Log.i("TAG: ", "localLocationServices START");
             locationReceiver = new DownloadLocationReceiver();
-            IntentFilter intentFilter = new IntentFilter(BROADCASTACTION);
-            LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver, intentFilter);
+            LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver, new IntentFilter(BROADCASTACTION));
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            //UNCOMMENT TO ENABLE LOCATION SERVICES
-            locationInformation();
+            locationInformation(); // Fetch location information
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     public void getAdapter() {
         menuItemDisplay = findViewById(R.id.recyclerview);
         myadapter = new AllMenuItemsAdapter(mId, this);
         menuItemDisplay.setAdapter(myadapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        menuItemDisplay.setLayoutManager(layoutManager);
+        menuItemDisplay.setLayoutManager(new LinearLayoutManager(this));
     }
 
     public void getPermissions() {
-        if (Build.VERSION.SDK_INT > 22) {
-            if (checkSelfPermission(permissions[0]) != PackageManager.PERMISSION_GRANTED ||
-                    checkSelfPermission(permissions[1]) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissions, 1);
-            }
+        if (Build.VERSION.SDK_INT > 22 && (checkSelfPermission(permissions[0]) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(permissions[1]) != PackageManager.PERMISSION_GRANTED)) {
+            requestPermissions(permissions, 1);
         }
     }
 
@@ -135,8 +112,8 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void showMap(){
-        if(DownloadLocationReceiver.localAddress != null) {
+    public void showMap() {
+        if (DownloadLocationReceiver.localAddress != null) {
             startActivity(new Intent(getApplicationContext(), MapFragmentActivity.class));
         }
     }
@@ -149,49 +126,13 @@ public class MainActivity extends Activity {
             return;
         }
         fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        /**SharedPreferences sharedPreferences = getSharedPreferences(LOCATIONDATA, MODE_PRIVATE);
-                        Log.i("TAG onSUCCESS", sharedPreferences.getString(CUSTOMERLOCATION, "0 0,0 0"));
-                        Log.i("TAG onSUCCESS", sharedPreferences.getString(OPENCLOSE, " "));
-                        String[] oldLocation =  sharedPreferences.getString(CUSTOMERLOCATION, "0 0,0 0").split(" ");
-                        String[] newLocation = String.valueOf(location).split(" ");
-                        String oldLocationLngLat = oldLocation[1];
-                        String newLocationLngLat = newLocation[1];
-                        String[] oLngLat = oldLocationLngLat.split(",");
-                        String[] nLngLat= newLocationLngLat.split(",");
-                        Float oLng = Float.parseFloat(oLngLat[0]);
-                        Float oLat = Float.parseFloat(oLngLat[1]);
-                        Float nLng = Float.parseFloat(nLngLat[0]);
-                        Float nLat = Float.parseFloat(nLngLat[1]);
-                        Float diffLng = Math.abs(nLng) - Math.abs(oLng);
-                        Float diffLat = Math.abs(nLat) - Math.abs(oLat);
-                        Boolean needNewLocation = false;
-                        Log.i("TAG LNG/LAT", String.valueOf(diffLng) + diffLat);
-                        if(diffLng > .005 || diffLat > .005){
-                            needNewLocation = true;
-                        }**/
-
-                        if(DownloadLocationReceiver.localname == null) {
-                            Log.i("TAG: ", "locationInformation onSuccess START");
-                            Intent intent = new Intent(MainActivity.this, LocationHelper.class);
-                            customerLocation = location;
-                            //sharedPreferences.edit().putString(CUSTOMERLOCATION, String.valueOf(location)).apply();
-                            newSave = true;
-                            startService(intent);
-                        } else{
-                            /**Log.i("TAG onSuccess", "ELSE");
-                            DownloadLocationReceiver.phone = Arrays.asList(sharedPreferences.getString(PHONE, " ").split(","));
-                            DownloadLocationReceiver.localAddress = Arrays.asList(sharedPreferences.getString(ADDRESS, " ").split("USA,"));
-                            DownloadLocationReceiver.localOpenClose = Arrays.asList(sharedPreferences.getString(OPENCLOSE, " ").split(","));
-                            DownloadLocationReceiver.hours = Arrays.asList(sharedPreferences.getString(HOURS, " ").split(","));
-                            DownloadLocationReceiver.localLat = Arrays.asList(sharedPreferences.getString(LAT, " ").split(","));
-                            DownloadLocationReceiver.localLng = Arrays.asList(sharedPreferences.getString(LNG, " ").split(","));
-                            DownloadLocationReceiver.photoList = Arrays.asList(sharedPreferences.getString(PHOTOS, " ").split(","));
-                            DownloadLocationReceiver.localname = Arrays.asList(sharedPreferences.getString(NAME, " ").split(","));
-                            **/
-                        }
+                .addOnSuccessListener(this, location -> {
+                    if (DownloadLocationReceiver.localname == null) {
+                        Log.i("TAG: ", "locationInformation onSuccess START");
+                        Intent intent = new Intent(MainActivity.this, LocationHelper.class);
+                        customerLocation = location;
+                        newSave = true;
+                        startService(intent);
                     }
                 });
     }
@@ -200,56 +141,62 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         mId = itemId;
-        getLists();
-        getAdapter();
+        getLists(); // Update the lists based on the selected menu item
+        getAdapter(); // Update the adapter for the RecyclerView
         return super.onOptionsItemSelected(item);
     }
-
-
+    
     public void getLists() {
+        // Clear previous lists
+        titleList = new ArrayList<>();
+        imageList = new ArrayList<>();
+        descriptionList = new ArrayList<>();
+    
+        // Update lists based on the selected menu item
         switch (mId) {
-            case (R.id.pizza_menu):
+            case R.id.pizza_menu:
                 titleList = ItemLists.getPizzaTitleList();
                 imageList = ItemLists.getPizzaList();
                 descriptionList = ItemLists.getPizzaDescriptionList();
                 break;
-            case (R.id.appetizers_menu):
+            case R.id.appetizers_menu:
                 titleList = ItemLists.getAppetizerTitleList();
                 imageList = ItemLists.getAppetizersList();
                 descriptionList = ItemLists.getAppetizerDescriptionList();
                 break;
-            case (R.id.sandwiches_menu):
+            case R.id.sandwiches_menu:
                 titleList = ItemLists.getSandwichesTitleList();
                 imageList = ItemLists.getSandwichesList();
                 descriptionList = ItemLists.getSandwichesDescriptionList();
                 break;
-            case (R.id.pastas_menu):
+            case R.id.pastas_menu:
                 titleList = ItemLists.getPastaTitleList();
                 imageList = ItemLists.getPastasList();
                 descriptionList = ItemLists.getPastaDescriptionList();
                 break;
-            case (R.id.salads_menu):
+            case R.id.salads_menu:
                 titleList = ItemLists.getSaladsAndCalzoneTitleList();
                 imageList = ItemLists.getSaladsAndCalzoneList();
                 descriptionList = ItemLists.getSaladsAndCalzoneDescriptionList();
                 break;
-            case (R.id.deserts_menu):
+            case R.id.deserts_menu:
                 titleList = ItemLists.getDesertTitleList();
                 imageList = ItemLists.getDesertsList();
                 descriptionList = ItemLists.getDesertDescriptionList();
                 break;
-            case (R.id.order_menu):
+            case R.id.order_menu:
                 startActivity(new Intent(this, CheckoutActivity.class));
                 break;
-            case(R.id.show_map):
+            case R.id.show_map:
                 showMap();
                 break;
             default:
                 break;
         }
     }
-
-    private void setupTransitions () {
+    
+    private void setupTransitions() {
+        // Set up animation transitions
         ObjectAnimator animateTranslation = ObjectAnimator.ofFloat(storeInformation, "translationY", 0f);
         ObjectAnimator animateAlpha = ObjectAnimator.ofFloat(mainFrame, "alpha", 1f);
         mainFrame.setAlpha(0f);
@@ -259,24 +206,27 @@ public class MainActivity extends Activity {
         set.playSequentially(animateTranslation, animateAlpha);
         set.start();
     }
-
-    public void saveData(){
+    
+    public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences(LOCATIONDATA, MODE_PRIVATE);
-        String string = sharedPreferences.getString(NAME, " ");
+        String string = sharedPreferences.getString(NAME, "");
         String teststring = String.valueOf(DownloadLocationReceiver.localname);
-        if(!string.equals(teststring));{
-            sharedPreferences.edit().putString(PHONE, String.valueOf(DownloadLocationReceiver.phone)).apply();
-            sharedPreferences.edit().putString(ADDRESS, String.valueOf(DownloadLocationReceiver.localAddress)).apply();
-            sharedPreferences.edit().putString(OPENCLOSE, String.valueOf(DownloadLocationReceiver.localOpenClose)).apply();
-            sharedPreferences.edit().putString(HOURS, String.valueOf(DownloadLocationReceiver.hours)).apply();
-            sharedPreferences.edit().putString(LAT, String.valueOf(DownloadLocationReceiver.localLat)).apply();
-            sharedPreferences.edit().putString(LNG, String.valueOf(DownloadLocationReceiver.localLng)).apply();
-            sharedPreferences.edit().putString(PHOTOS, String.valueOf(DownloadLocationReceiver.photoList)).apply();
-            sharedPreferences.edit().putString(NAME, String.valueOf(DownloadLocationReceiver.localname)).apply();
-            sharedPreferences.edit().putString(CUSTOMERLOCATION, String.valueOf(customerLocation)).apply();
+        if (!string.equals(teststring)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(PHONE, String.valueOf(DownloadLocationReceiver.phone));
+            editor.putString(ADDRESS, String.valueOf(DownloadLocationReceiver.localAddress));
+            editor.putString(OPENCLOSE, String.valueOf(DownloadLocationReceiver.localOpenClose));
+            editor.putString(HOURS, String.valueOf(DownloadLocationReceiver.hours));
+            editor.putString(LAT, String.valueOf(DownloadLocationReceiver.localLat));
+            editor.putString(LNG, String.valueOf(DownloadLocationReceiver.localLng));
+            editor.putString(PHOTOS, String.valueOf(DownloadLocationReceiver.photoList));
+            editor.putString(NAME, String.valueOf(DownloadLocationReceiver.localname));
+            editor.putString(CUSTOMERLOCATION, String.valueOf(customerLocation));
+            editor.apply();
+    
             Log.i("TAG saveDATA", String.valueOf(customerLocation));
             Log.i("TAG saveDATA", String.valueOf(DownloadLocationReceiver.localname));
         }
-
     }
+    
 }

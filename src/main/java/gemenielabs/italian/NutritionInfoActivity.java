@@ -26,26 +26,28 @@ public class NutritionInfoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
         setContentView(R.layout.nutritioninfo);
+
+        // Retrieve data from intent
+        Intent intent = getIntent();
         listTitle = intent.getStringExtra(AllMenuItemsAdapter.TITLE);
         description = intent.getStringExtra(AllMenuItemsAdapter.DESCRIPTION);
         image = intent.getIntExtra(AllMenuItemsAdapter.IMAGE, 0);
-        //findViewById(R.id.nutrition_order_button).setOnClickListener(view -> nutritionOrder(view));
-        findViewById(R.id.nutrition_order_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nutritionOrder(view);
-            }
-        });
+
+        // Set click listener for nutrition order button
+        findViewById(R.id.nutrition_order_button).setOnClickListener(view -> nutritionOrder(view));
+
+        // Enable back button in the action bar
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Set data for nutrition information
         setData();
     }
 
     public void setData() {
         // Create a new instance of NutritionHelper
         NutritionHelper nutritionHelper = new NutritionHelper(listTitle);
-        
+
         // Initialize TextViews and ImageView
         TextView textViewcalories = findViewById(R.id.calories);
         TextView textViewfat = findViewById(R.id.fat);
@@ -57,10 +59,10 @@ public class NutritionInfoActivity extends Activity {
         ImageView imageOfSpecificItem = findViewById(R.id.imageView);
         TextView titleOfSpecificItem = findViewById(R.id.map_title);
         TextView descriptionOfSpecificItem = findViewById(R.id.description);
-    
+
         // Search for nutrition information
         nutritionHelper.searchForNutritionInfo();
-        
+
         // Set nutrition data to TextViews
         if (nutritionHelper.getCalories().equals("0")) {
             textViewprotien.setText("Nutrition Information Not Available");
@@ -73,12 +75,12 @@ public class NutritionInfoActivity extends Activity {
             textViewsugars.setText(nutritionHelper.getSugars());
             textViewprotien.setText(nutritionHelper.getProtien());
         }
-    
+
         // Set title, description, and image
         titleOfSpecificItem.setText(listTitle);
         descriptionOfSpecificItem.setText(description);
         imageOfSpecificItem.setImageResource(image);
-    
+
         // Define and start animations
         ObjectAnimator animateFadeCalorie = ObjectAnimator.ofFloat(textViewcalories, "alpha", 1f);
         ObjectAnimator animateFadeFat = ObjectAnimator.ofFloat(textViewfat, "alpha", 1f);
@@ -87,7 +89,7 @@ public class NutritionInfoActivity extends Activity {
         ObjectAnimator animateFadeCarbohydrates = ObjectAnimator.ofFloat(textViewcarbohydrates, "alpha", 1f);
         ObjectAnimator animateFadeSugars = ObjectAnimator.ofFloat(textViewsugars, "alpha", 1f);
         ObjectAnimator animateFadeProtein = ObjectAnimator.ofFloat(textViewprotien, "alpha", 1f);
-    
+
         AnimatorSet topSet = new AnimatorSet();
         topSet.playTogether(animateFadeCalorie, animateFadeSodium);
         AnimatorSet midSet = new AnimatorSet();
@@ -99,26 +101,28 @@ public class NutritionInfoActivity extends Activity {
         set.playSequentially(topSet, midSet, bottomSet);
         set.start();
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                // Navigate up to the previous activity
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     public void nutritionOrder(View v) {
         // Check if it's a valid order
-        if (getIntent().getIntExtra(AllMenuItemsAdapter.ID, 0) == R.id.deserts_menu && getIntent().getIntExtra(AllMenuItemsAdapter.POSITION, 0) == 4) {
+        if (getIntent().getIntExtra(AllMenuItemsAdapter.ID, 0) == R.id.deserts_menu
+                && getIntent().getIntExtra(AllMenuItemsAdapter.POSITION, 0) == 4) {
             return;
         }
-    
+
         // Create an intent to start the OrderActivity
         Intent intent = new Intent(this, OrderActivity.class);
-        
+
         // Set extra data for the intent
         int position = getIntent().getIntExtra(AllMenuItemsAdapter.POSITION, 0);
         intent.putExtra(AllMenuItemsAdapter.ID, getIntent().getIntExtra(AllMenuItemsAdapter.ID, 0));
@@ -126,12 +130,12 @@ public class NutritionInfoActivity extends Activity {
         intent.putExtra(AllMenuItemsAdapter.TITLE, (String) MainActivity.titleList.get(position));
         intent.putExtra(AllMenuItemsAdapter.DESCRIPTION, (String) MainActivity.descriptionList.get(position));
         intent.putExtra(AllMenuItemsAdapter.IMAGE, (int) MainActivity.imageList.get(position));
-        
+
         // Start the OrderActivity
         startActivity(intent);
     }
-
 }
+
 
 
 

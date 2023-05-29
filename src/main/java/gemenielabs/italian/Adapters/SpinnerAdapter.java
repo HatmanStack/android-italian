@@ -20,7 +20,6 @@ import gemenielabs.italian.R;
 import static java.lang.Boolean.TRUE;
 
 public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.ViewHolder> {
-
     public Context mContext;
     public ItemSelectedListener mItemSelectedListener;
     public ArrayList<Integer> spinnerADDNO;
@@ -38,34 +37,32 @@ public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Create ViewHolder with the inflated view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.spinner_recycler, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.i("TAG: onBindViewHolder", "START");
-        Log.i("TAG:onBindViewHolder:Sp", spinnerADDNO.get(position) + "");
-        Log.i("TAG:onBindView:spinnerP", spinnerP[position] + "");
         int resource = spinnerADDNO.get(position);
         int resId = 0;
+
+        // Determine resource and text for the spinner based on the resource value
         if (resource == R.string.action_calzones) {
             resId = R.array.appetizer_size_medium;
             holder.textView.setText(mContext.getResources().getString(R.string.order_SIZE));
-        }
-        if(resource == R.id.pizza_menu) {
+        } else if (resource == R.id.pizza_menu) {
             if (position == 0) {
                 resId = R.array.size_array;
                 holder.textView.setText(mContext.getResources().getString(R.string.order_SIZE));
-            }else {
+            } else {
                 resId = R.array.crust_array;
                 resource = R.string.order_CRUST;
                 holder.spinner.setTag(resource);
                 holder.textView.setText(mContext.getResources().getString(R.string.order_CRUST));
             }
-        }
-        if(resource == R.id.appetizers_menu) {
+        } else if (resource == R.id.appetizers_menu) {
             if (mPosition == 0 || mPosition == 5 || mPosition == 6) {
                 resId = R.array.appetizer_size_large;
             } else if (mPosition == 1 || mPosition == 2 || mPosition == 3 || mPosition == 7 || mPosition == 8) {
@@ -74,59 +71,49 @@ public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.ViewHold
                 resId = R.array.appetizer_size_small;
             }
             holder.spinner.setTag(resId);
-        }
-        if(resource == R.id.pastas_menu) {
+        } else if (resource == R.id.pastas_menu) {
             resId = R.array.pasta_size_array;
-        }
-        if(resource == R.id.salads_menu) {
+        } else if (resource == R.id.salads_menu) {
             resId = R.array.appetizer_size_medium;
-        }
-        if(resource == R.id.deserts_menu) {
+        } else if (resource == R.id.deserts_menu) {
             resId = R.array.desert_size_array;
-            if(mPosition == 3){
+            if (mPosition == 3) {
                 resId = R.array.appetizer_size_small;
             }
-        }
-        if(resource == R.string.order_ADD || resource == R.string.order_NO ||
+        } else if (resource == R.string.order_ADD || resource == R.string.order_NO ||
                 resource == R.string.order_STUFFING) {
             resId = R.array.toppings_array;
             holder.spinner.setTag(resource);
             holder.textView.setText(mContext.getResources().getString(R.string.order_TOPPINGS));
+        } else if (resource == R.id.sandwiches_menu) {
+            return;
+        } else if (resource == R.string.pizza_left || resource == R.string.pizza_right) {
+            holder.textView.setText(resource);
+            resId = R.array.half_toppings_array;
         }
+
         holder.spinner.setTag(resource);
 
-        if(resource == R.id.sandwiches_menu){
-            return;
-        }
-        if(resource == R.string.pizza_left){
-            holder.textView.setText(resource);
-            resId = R.array.half_toppings_array;
-        }
-        if(resource == R.string.pizza_right){
-            holder.textView.setText(resource);
-            resId = R.array.half_toppings_array;
-        }
+        // Create ArrayAdapter and set it to the spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext, resId,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spinner.setAdapter(adapter);
+
         Log.i("TAG: BIND ", holder.textView.getText().toString());
         holder.spinner.setSelection(spinnerP[position]);
-        }
+    }
 
-
-    public interface ItemSelectedListener{
-            void onAdapterItemSelected(Object tag, String id, int spinnerNumber, int clickedPosition);
-        }
+    public interface ItemSelectedListener {
+        void onAdapterItemSelected(Object tag, String id, int spinnerNumber, int clickedPosition);
+    }
 
     @Override
     public int getItemCount() {
         return spinnerADDNO.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder
-        implements AdapterView.OnItemSelectedListener{
-
+    class ViewHolder extends RecyclerView.ViewHolder implements AdapterView.OnItemSelectedListener {
         public Spinner spinner;
         public TextView textView;
 
@@ -139,13 +126,18 @@ public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.ViewHold
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            mItemSelectedListener.onAdapterItemSelected(spinner.getTag(), (String) adapterView.getItemAtPosition(i),
-                    getAdapterPosition(), i);
+            mItemSelectedListener.onAdapterItemSelected(
+                    spinner.getTag(),
+                    (String) adapterView.getItemAtPosition(i),
+                    getAdapterPosition(),
+                    i
+            );
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-
+            // Empty implementation
         }
     }
 }
+

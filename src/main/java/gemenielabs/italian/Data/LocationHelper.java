@@ -20,7 +20,6 @@ import java.util.Scanner;
 import gemenielabs.italian.MainActivity;
 
 public class LocationHelper extends IntentService {
-
     ArrayList<String> phoneNumber = new ArrayList<>();
     ArrayList<String> photos = new ArrayList<>();
     ArrayList<String> hours = new ArrayList<>();
@@ -43,26 +42,31 @@ public class LocationHelper extends IntentService {
         getLocation();
     }
 
-
-    public void getLocation () {
+    public void getLocation() {
         Log.i("TAG:  ", "getLocation START");
+
+        // Construct searchLatLng based on customer location
         String searchLatLng;
-        if(MainActivity.customerLocation != null) {
+        if (MainActivity.customerLocation != null) {
             String lat = String.valueOf(MainActivity.customerLocation.getLatitude());
             String lng = String.valueOf(MainActivity.customerLocation.getLongitude());
             searchLatLng = lat + "," + lng;
-        }else {
+        } else {
             Toast.makeText(this, "Turn on Location Services", Toast.LENGTH_SHORT).show();
-            searchLatLng = "37.7749,-122.4194";
+            searchLatLng = "37.7749,-122.4194"; // Default location
         }
+
+        // Create URL for the Google Places API request
         URL url = null;
         try {
             url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=AIzaSyACUQsBoQ4Fx5eogS0fZN_6nd7Gwtv7IZU");
+                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=YOUR_API_KEY");
             Log.i("TAG:  ", String.valueOf(url));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Make HTTP request and parse the response
         HttpURLConnection urlConnection = null;
         String mapJson = "";
         try {
@@ -76,6 +80,7 @@ public class LocationHelper extends IntentService {
                 hasInput = scanner.hasNextLine();
             }
 
+            // Parse the JSON response
             JSONObject mapData = new JSONObject(mapJson);
             JSONArray arr = mapData.getJSONArray("results");
             Log.i("TAG: ", String.valueOf(arr));
@@ -90,10 +95,7 @@ public class LocationHelper extends IntentService {
                 Boolean open = arr.getJSONObject(i).getJSONObject("opening_hours").getBoolean("open_now");
                 placeId.add(arr.getJSONObject(i).getString("place_id"));
 
-                String openString = "CLOSED";
-                if (open) {
-                    openString = "OPEN";
-                }
+                String openString = open ? "OPEN" : "CLOSED";
                 openClose.add(openString);
             }
         } catch (Exception e) {
@@ -101,12 +103,13 @@ public class LocationHelper extends IntentService {
         } finally {
             urlConnection.disconnect();
         }
+
+        // Fetch additional details for each place
         for (int i = 0; i < placeId.size(); i++) {
             try {
-
                 mapJson = "";
                 URL localUrl = new URL("https://maps.googleapis.com/maps/api/place/details/json?placeid=" +
-                        placeId.get(i) + "&key=AIzaSyACUQsBoQ4Fx5eogS0fZN_6nd7Gwtv7IZU");
+                        placeId.get(i) + "&key=YOUR_API_KEY");
 
                 Log.i("TAG:  localUrl ", String.valueOf(localUrl));
                 urlConnection = (HttpURLConnection) localUrl.openConnection();
@@ -119,6 +122,8 @@ public class LocationHelper extends IntentService {
                     mapJson += scanner.nextLine();
                     hasInput = scanner.hasNextLine();
                 }
+
+                // Parse the additional place details
                 JSONObject jsonObject = new JSONObject(mapJson);
                 name.add(jsonObject.getJSONObject("result").getString("name"));
                 addressString.add(jsonObject.getJSONObject("result").getString("formatted_address"));
@@ -132,10 +137,12 @@ public class LocationHelper extends IntentService {
                 urlConnection.disconnect();
             }
         }
+
         deliverResults();
     }
 
-    public void deliverResults(){
+    public void deliverResults() {
+        // Send broadcast with the collected location details
         Intent intent = new Intent(MainActivity.BROADCASTACTION);
         intent.putStringArrayListExtra(MainActivity.LAT, latString);
         intent.putStringArrayListExtra(MainActivity.LNG, lngString);
@@ -148,5 +155,5 @@ public class LocationHelper extends IntentService {
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
-
 }
+
