@@ -58,9 +58,10 @@ public class LocationHelper extends IntentService {
 
         // Create URL for the Google Places API request
         URL url = null;
+        String secretValue = getString(R.string.api_key);
         try {
             url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=YOUR_API_KEY");
+                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=" + secretValue);
             Log.i("TAG:  ", String.valueOf(url));
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,7 +110,7 @@ public class LocationHelper extends IntentService {
             try {
                 mapJson = "";
                 URL localUrl = new URL("https://maps.googleapis.com/maps/api/place/details/json?placeid=" +
-                        placeId.get(i) + "&key=YOUR_API_KEY");
+                        placeId.get(i) + "&key=" + secretValue);
 
                 Log.i("TAG:  localUrl ", String.valueOf(localUrl));
                 urlConnection = (HttpURLConnection) localUrl.openConnection();

@@ -95,9 +95,10 @@ import com.squareup.picasso.Picasso;
                             String[] a = string.split(",");
                             address.setText(a[0]);
                             openCloseTextView.setText((String) DownloadLocationReceiver.localOpenClose.get(tag));
-    
+                            
+                            String secretValue = getString(R.string.api_key);
                             Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" +
-                                    DownloadLocationReceiver.photoList.get(tag) + "&key=YOUR_API_KEY")
+                                    DownloadLocationReceiver.photoList.get(tag) + "&key=" + secretValue)
                                     .placeholder(R.drawable.ic_pizza_logo).into(imageView, new MarkerCallback(marker));
     
                             return mWindow;
