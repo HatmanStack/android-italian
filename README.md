@@ -1,6 +1,6 @@
 # Italian
 
-This is a proof of concept app for an Italian restaurant. The code is not meant to be used in production.
+This is a <b>Proof of Concept</b> app for an Italian restaurant. The code is <b>Not</b> meant to be used in <b>Production</b>.
 
 ## Demo
 

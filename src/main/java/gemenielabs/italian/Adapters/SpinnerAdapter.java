@@ -46,7 +46,8 @@ public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.i("TAG: onBindViewHolder", "START");
         int resource = spinnerADDNO.get(position);
-        int resId = 0;
+        int resId = R.array.appetizer_size_medium;
+        Log.i("TAG: resource", String.valueOf(resource));
 
         // Determine resource and text for the spinner based on the resource value
         if (resource == R.string.action_calzones) {

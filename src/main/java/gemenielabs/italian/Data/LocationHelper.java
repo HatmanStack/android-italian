@@ -8,6 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import gemenielabs.italian.MainActivity;
+import gemenielabs.italian.R;
 
 public class LocationHelper extends IntentService {
+
     ArrayList<String> phoneNumber = new ArrayList<>();
     ArrayList<String> photos = new ArrayList<>();
     ArrayList<String> hours = new ArrayList<>();
@@ -42,46 +46,49 @@ public class LocationHelper extends IntentService {
         getLocation();
     }
 
-    public void getLocation() {
-        Log.i("TAG:  ", "getLocation START");
 
-        // Construct searchLatLng based on customer location
+    public void getLocation () {
+        Log.i("TAG:  ", "getLocation START");
         String searchLatLng;
-        if (MainActivity.customerLocation != null) {
+        Log.i("LOCATION", String.valueOf(MainActivity.customerLocation));
+        if(MainActivity.customerLocation != null) {
             String lat = String.valueOf(MainActivity.customerLocation.getLatitude());
             String lng = String.valueOf(MainActivity.customerLocation.getLongitude());
             searchLatLng = lat + "," + lng;
-        } else {
+        }else {
             Toast.makeText(this, "Turn on Location Services", Toast.LENGTH_SHORT).show();
-            searchLatLng = "37.7749,-122.4194"; // Default location
+            searchLatLng = "37.7749,-122.4194";
         }
-
-        // Create URL for the Google Places API request
         URL url = null;
-        String secretValue = getString(R.string.api_key);
+
         try {
             url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=" + secretValue);
+                    searchLatLng + "&radius=10000&type=restaurant&keyword=Pizza&key=" + getString(R.string.api_key));
             Log.i("TAG:  ", String.valueOf(url));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // Make HTTP request and parse the response
         HttpURLConnection urlConnection = null;
         String mapJson = "";
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = urlConnection.getInputStream();
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-            boolean hasInput = scanner.hasNextLine();
-            while (hasInput) {
-                mapJson += scanner.nextLine().replace(" ", "");
-                hasInput = scanner.hasNextLine();
+            //urlConnection = (HttpURLConnection) url.openConnection();
+            //InputStream in = urlConnection.getInputStream();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+            if (urlConnection.getResponseCode() == 200) {
+                InputStream in = urlConnection.getInputStream();
+                Scanner scanner = new Scanner(in);
+                scanner.useDelimiter("\\A");
+                boolean hasInput = scanner.hasNextLine();
+                while (hasInput) {
+                    mapJson += scanner.nextLine().replace(" ", "");
+                    hasInput = scanner.hasNextLine();
+                }
+                in.close();
+            } else {
+                Log.i("TAG", "ERROR IN CONNECTION");
             }
-
-            // Parse the JSON response
             JSONObject mapData = new JSONObject(mapJson);
             JSONArray arr = mapData.getJSONArray("results");
             Log.i("TAG: ", String.valueOf(arr));
@@ -96,7 +103,10 @@ public class LocationHelper extends IntentService {
                 Boolean open = arr.getJSONObject(i).getJSONObject("opening_hours").getBoolean("open_now");
                 placeId.add(arr.getJSONObject(i).getString("place_id"));
 
-                String openString = open ? "OPEN" : "CLOSED";
+                String openString = "CLOSED";
+                if (open) {
+                    openString = "OPEN";
+                }
                 openClose.add(openString);
             }
         } catch (Exception e) {
@@ -104,13 +114,12 @@ public class LocationHelper extends IntentService {
         } finally {
             urlConnection.disconnect();
         }
-
-        // Fetch additional details for each place
         for (int i = 0; i < placeId.size(); i++) {
             try {
+
                 mapJson = "";
                 URL localUrl = new URL("https://maps.googleapis.com/maps/api/place/details/json?placeid=" +
-                        placeId.get(i) + "&key=" + secretValue);
+                        placeId.get(i) + "&key=" + getString(R.string.api_key));
 
                 Log.i("TAG:  localUrl ", String.valueOf(localUrl));
                 urlConnection = (HttpURLConnection) localUrl.openConnection();
@@ -123,8 +132,6 @@ public class LocationHelper extends IntentService {
                     mapJson += scanner.nextLine();
                     hasInput = scanner.hasNextLine();
                 }
-
-                // Parse the additional place details
                 JSONObject jsonObject = new JSONObject(mapJson);
                 name.add(jsonObject.getJSONObject("result").getString("name"));
                 addressString.add(jsonObject.getJSONObject("result").getString("formatted_address"));
@@ -138,12 +145,10 @@ public class LocationHelper extends IntentService {
                 urlConnection.disconnect();
             }
         }
-
         deliverResults();
     }
 
-    public void deliverResults() {
-        // Send broadcast with the collected location details
+    public void deliverResults(){
         Intent intent = new Intent(MainActivity.BROADCASTACTION);
         intent.putStringArrayListExtra(MainActivity.LAT, latString);
         intent.putStringArrayListExtra(MainActivity.LNG, lngString);
@@ -156,5 +161,5 @@ public class LocationHelper extends IntentService {
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
-}
 
+}

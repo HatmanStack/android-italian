@@ -41,7 +41,7 @@ public class AllMenuItemsAdapter extends RecyclerView.Adapter<AllMenuItemsAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.titleOfItem.setText((String) MainActivity.titleList.get(position));
         holder.descriptionOfItem.setText((String) MainActivity.descriptionList.get(position));
-        holder.imageOfItem.setImageResource((int) MainActivity.imageList.get(position));
+        holder.imageOfItem.setImageResource(MainActivity.imageList.get(position));
         holder.seperateImage.setImageResource(android.R.drawable.button_onoff_indicator_off);
         holder.itemView.setTag("101");
     }
@@ -90,7 +90,7 @@ public class AllMenuItemsAdapter extends RecyclerView.Adapter<AllMenuItemsAdapte
             intent.putExtra(POSITION, clickedPosition);
             intent.putExtra(TITLE, (String) MainActivity.titleList.get(clickedPosition));
             intent.putExtra(DESCRIPTION, (String) MainActivity.descriptionList.get(clickedPosition));
-            intent.putExtra(IMAGE, (int) MainActivity.imageList.get(clickedPosition));
+            intent.putExtra(IMAGE, MainActivity.imageList.get(clickedPosition));
             mContext.startActivity(intent);
         }
     }

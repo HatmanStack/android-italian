@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,6 +88,7 @@ public class CheckoutActivity extends Activity implements OrderSummaryAdapter.Li
     }
 
     public void buildString() {
+        Log.i("TAG", String.valueOf(listItem));
         String orderString = (comment != null) ?
                 listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault()) + "\n" + comment :
                 listItem.toUpperCase(Locale.getDefault()) + item.toLowerCase(Locale.getDefault());

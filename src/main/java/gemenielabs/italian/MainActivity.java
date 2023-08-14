@@ -28,6 +28,7 @@ import gemenielabs.italian.Data.ItemLists;
 import gemenielabs.italian.Data.LocationHelper;
 import gemenielabs.italian.Data.NutritionInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public class MainActivity extends Activity {
     private AllMenuItemsAdapter myadapter;
     private RecyclerView menuItemDisplay;
     private DownloadLocationReceiver locationReceiver;
-    public static List<String> titleList, imageList, descriptionList;
+    public static List<String> titleList;
+    public static List<Integer> imageList;
+    public static List<String> descriptionList;
     public static Location customerLocation;
     public static final String LOCATIONDATA = "locationdata";
     public static final String BROADCASTACTION = "broadcastaction";
@@ -129,6 +132,7 @@ public class MainActivity extends Activity {
                 .addOnSuccessListener(this, location -> {
                     if (DownloadLocationReceiver.localname == null) {
                         Log.i("TAG: ", "locationInformation onSuccess START");
+                        Log.i("TAG: ", String.valueOf(location));
                         Intent intent = new Intent(MainActivity.this, LocationHelper.class);
                         customerLocation = location;
                         newSave = true;
