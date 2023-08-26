@@ -1,6 +1,6 @@
 # Italian
 
-This is a <b>Proof of Concept</b> app for an Italian restaurant. The code is <b>Not</b> meant to be used in <b>Production</b>.
+This is a <b>Proof of Concept</b> app for an Italian restaurant chain. The code is <b>Not</b> meant to be used in <b>Production</b>.
 
 ## Demo
 
@@ -21,6 +21,7 @@ Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube 
 <ul>
 <li>Java</li>
 <li>Android SDK</li>
+<li>JetPack</li>
 <li>Places API</li>
 </ul>
 
@@ -31,6 +32,8 @@ Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube 
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian.png" alt="Image 1"></td>
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian1.png" alt="Image 2"></td>
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian2.png" alt="Image 3"></td>
+</tr>
+<tr>
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian3.png" alt="Image 4"></td>
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian4.png" alt="Image 5"></td>
     <td><img src="https://github.com/HatmanStack/android-italian/blob/main/pics/italian5.png" alt="Image 6"></td>
