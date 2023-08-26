@@ -1,0 +1,5 @@
+app/build/
+app/libs/
+app/release/
+app/src/main/res/values/secrets.xml
+local.properties
