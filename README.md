@@ -22,7 +22,7 @@ Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube 
 <li>Java</li>
 <li>Android SDK</li>
 <li>JetPack</li>
-<li>Places API</li>
+<li>Places API Create string "api_key" in res/values insert Google API key</li>
 </ul>
 
 ## Screenshots
