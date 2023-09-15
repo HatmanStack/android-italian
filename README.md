@@ -1,10 +1,10 @@
 # Italian
 
-This is a <b>Proof of Concept</b> app for an Italian restaurant chain. The code is <b>Not</b> meant to be used in <b>Production</b>.
+This is a <b>Proof of Concept</b> app for an Italian restaurant. It provides menu and nutritional information with an ability to pick items from a menu with order customization and pricing. Local location information is searched for and presented in custom map markers. The map markers open windows that display the restaurants location information and open/close status. Once the window is clicked a screen displaying the restaurant’s phone number and hours of operation is displayed.
 
 ## Demo
 
-Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube demo. You can download the application from the Google Play Store by clicking [here](https://play.google.com/store/apps/details?id=gemenielabs.italian).
+[Youtube demo](https://www.youtube.com/watch?v=0L9OZ7Lr804) Download the application from the [Google Play Store](https://play.google.com/store/apps/details?id=gemenielabs.italian).
 
 ## Features
 
@@ -22,7 +22,7 @@ Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube 
 <li>Java</li>
 <li>Android SDK</li>
 <li>JetPack</li>
-<li>Places API Create string "api_key" in res/values insert Google API key</li>
+<li>Places API</li> 
 </ul>
 
 ## Screenshots
@@ -45,6 +45,7 @@ Click [here](https://www.youtube.com/watch?v=0L9OZ7Lr804) to access the Youtube 
 - Open Android Studio. From the Welcome screen, select Open an existing Android Studio project.
 - From the Open File or Project window that appears, navigate to and select the android-italian directory. Click OK.
 - If it asks you to do a Gradle Sync, click OK.
+- <b>Create string "api_key" in res/values folder insert Google API key</b>
 - With your Android device/emulator connected to your computer and developer mode enabled, click on the green Run arrow in Android Studio.
 
 ## License
