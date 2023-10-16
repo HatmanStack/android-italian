@@ -4,12 +4,12 @@ import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,19 +17,26 @@ import android.view.*;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.location.LocationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import gemenielabs.italian.Adapters.AllMenuItemsAdapter;
 import gemenielabs.italian.Data.ItemLists;
 import gemenielabs.italian.Data.LocationHelper;
 import gemenielabs.italian.Data.NutritionInfo;
 
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends Activity {
@@ -46,20 +53,23 @@ public class MainActivity extends Activity {
     public static final String PHONE = "phone", ADDRESS = "address", OPENCLOSE = "open_close",
             HOURS = "hours", LAT = "lat", LNG = "lng", PHOTOS = "photo", NAME = "name";
     private Boolean newSave;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private FusedLocationProviderClient fusedLocationClient;
     int mId;
     ViewGroup storeInformation, mainFrame;
     public String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE};
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.main);
-        
+
         // Load nutrition information
         new NutritionInfo().loadNutritionInformation();
-        
+
         localLocationServices(); // Initialize location services
 
         // Get the selected menu item ID
@@ -78,10 +88,12 @@ public class MainActivity extends Activity {
             Log.i("TAG: ", "localLocationServices START");
             locationReceiver = new DownloadLocationReceiver();
             LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver, new IntentFilter(BROADCASTACTION));
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             locationInformation(); // Fetch location information
         }
     }
+
+
 
     public void getAdapter() {
         menuItemDisplay = findViewById(R.id.recyclerview);
@@ -121,6 +133,7 @@ public class MainActivity extends Activity {
         }
     }
 
+
     public void locationInformation() {
         getPermissions();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -128,13 +141,37 @@ public class MainActivity extends Activity {
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        fusedLocationProviderClient.getLastLocation()
+        LocationRequest mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationCallback mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
+                super.onLocationAvailability(locationAvailability);
+            }
+
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        //TODO: UI updates.
+                    }
+                }
+            }
+        };
+        fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+
+        fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
-                    if (DownloadLocationReceiver.localname == null) {
-                        Log.i("TAG: ", "locationInformation onSuccess START");
+                    if (location != null) {
                         Log.i("TAG: ", String.valueOf(location));
                         Intent intent = new Intent(MainActivity.this, LocationHelper.class);
                         customerLocation = location;
+                        Log.i("TAG: ", String.valueOf(customerLocation));
                         newSave = true;
                         startService(intent);
                     }

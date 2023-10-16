@@ -57,7 +57,7 @@ public class LocationHelper extends IntentService {
             searchLatLng = lat + "," + lng;
         }else {
             Toast.makeText(this, "Turn on Location Services", Toast.LENGTH_SHORT).show();
-            searchLatLng = "37.7749,-122.4194";
+            searchLatLng = "37.390,-122.083";
         }
         URL url = null;
 
@@ -86,6 +86,8 @@ public class LocationHelper extends IntentService {
                     hasInput = scanner.hasNextLine();
                 }
                 in.close();
+
+                Log.i("ClOSE INPUT STREAM", mapJson);
             } else {
                 Log.i("TAG", "ERROR IN CONNECTION");
             }

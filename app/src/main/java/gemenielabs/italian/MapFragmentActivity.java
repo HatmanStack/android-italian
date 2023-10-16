@@ -66,7 +66,7 @@ public class MapFragmentActivity extends FragmentActivity
         if(MainActivity.customerLocation != null) {
             latLng = new LatLng(MainActivity.customerLocation.getLatitude(), MainActivity.customerLocation.getLongitude());
         }else {
-            latLng = new LatLng(37.61,-97.24);
+            latLng = new LatLng(37.3904,-122.0833);
         }
         GoogleMap.InfoWindowAdapter infoWindowAdapter = null;
         //map.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.
@@ -125,10 +125,9 @@ public class MapFragmentActivity extends FragmentActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

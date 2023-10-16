@@ -3,6 +3,7 @@ package gemenielabs.italian.Data;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,9 +76,7 @@ public class NutritionInfo {
         String adds = "Pepperoni ,Beef ,Pork Sausage ,Italian Sausage ,Sliced Italian Sausage ,Meatballs ,Italian Chicken ,Real Bacon Pieces ,Canadian Bacon ,Salami ," +
         "Shrimp ,Fresh Tomato ,Mushroom ,White Onion ,Red Onion ,Green Pepper ,Jalapeno ,Pepperoncini Pepper ,Roasted Red Pepper ,Black Olive ," +
         "Green Olive ,Pineapple ,Sauerkraut ,Spinach ,Extra Cheese ,Extra Dressing";
-        for (String string : adds.split(",")){
-            addOns.add(string);
-        }
+        Collections.addAll(addOns, adds.split(","));
     }
 
     public ArrayList<String> getNutritionInfoArray () {
