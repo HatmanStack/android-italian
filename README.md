@@ -1,6 +1,6 @@
 # Italian
 
-This is a <b>Proof of Concept</b> app for an Italian restaurant. It provides menu and nutritional information with an ability to pick items from a menu with order customization and pricing. Local location information is searched for and presented in custom map markers. The map markers open windows that display the restaurants location information and open/close status. Once the window is clicked a screen displaying the restaurant’s phone number and hours of operation is displayed.
+This is a <ul><b>Proof of Concept</b></ul> app for an Italian restaurant. DO NOT USE IN PRODUCTION. It provides menu and nutritional information with an ability to pick items from a menu with order customization and pricing. Local location information is searched for and presented in custom map markers. The map markers open windows that display the restaurants location information and open/close status. Once the window is clicked a screen displaying the restaurant’s phone number and hours of operation is displayed.
 
 ## Demo
 
