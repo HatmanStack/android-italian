@@ -1,10 +1,12 @@
 package gemenielabs.italian.Data;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -19,11 +21,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.xml.transform.Result;
+
 import gemenielabs.italian.MainActivity;
 import gemenielabs.italian.R;
+import kotlinx.coroutines.scheduling.CoroutineScheduler;
 
-public class LocationHelper extends IntentService {
 
+public class LocationWorker extends CoroutineScheduler.Worker {
+    public LocationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
     ArrayList<String> phoneNumber = new ArrayList<>();
     ArrayList<String> photos = new ArrayList<>();
     ArrayList<String> hours = new ArrayList<>();
@@ -36,24 +44,18 @@ public class LocationHelper extends IntentService {
     double lat;
     double lng;
 
-    public LocationHelper() {
-        super("LocationHelperThread");
-        setIntentRedelivery(true);
-    }
 
+
+
+    @NonNull
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        getLocation();
-    }
-
-
-    public void getLocation () {
+    public Result doWork() {
         Log.i("TAG:  ", "getLocation START");
         String searchLatLng;
         Log.i("LOCATION", String.valueOf(MainActivity.customerLocation));
         if(MainActivity.customerLocation != null) {
-            String lat = String.valueOf(MainActivity.customerLocation.getLatitude());
-            String lng = String.valueOf(MainActivity.customerLocation.getLongitude());
+            String lat = String.valueOf(MainActivity.custLat);
+            String lng = String.valueOf(MainActivity.custLong);
             searchLatLng = lat + "," + lng;
         }else {
             Toast.makeText(this, "Turn on Location Services", Toast.LENGTH_SHORT).show();
@@ -161,7 +163,13 @@ public class LocationHelper extends IntentService {
         intent.putStringArrayListExtra(MainActivity.PHOTOS, photos);
         intent.putStringArrayListExtra(MainActivity.NAME, name);
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        // Add any data you want to send with the broadcast
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+        // Indicate success or failure
+        return Result.success();
     }
 
 }
