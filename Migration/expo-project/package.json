@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "type-check": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.6",
