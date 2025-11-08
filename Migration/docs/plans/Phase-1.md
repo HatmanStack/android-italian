@@ -840,6 +840,98 @@ After completing Phase 1, you should have:
 - ✅ Type-safe codebase
 - ✅ All tests passing
 
+---
+
+## Review Feedback (Iteration 1)
+
+### Task 3: Project Directory Structure
+
+> **Consider:** Looking at your `src/` directory, how many subdirectories do you see? The plan specifies creating 10 subdirectories. Can you list which ones are present and which are missing?
+>
+> **Reflect:** Run `ls -la src/` and compare with the **Files to Create** section in Task 3 (lines 194-204). Which directories did you not create?
+>
+> **Think about:** Why might empty directories be important for future phases? What will Phase 2 try to create in `src/services/`? What will Phase 4 need in `src/data/` and `src/components/`?
+>
+> **Action needed:** Create the missing directories: `src/components/`, `src/services/`, `src/stores/`, `src/data/`, `src/utils/`, and `src/assets/images/`. Empty directories are fine - they'll be populated in later phases.
+
+### Task 4: ESLint Configuration
+
+> **Consider:** When you run `npm run lint`, what error message do you get? The error mentions "ESLint v9.0.0" and a new configuration format.
+>
+> **Reflect:** Look at your `package.json` line 40. What version of ESLint did you install? Now look at your `.eslintrc.js` file - what format is it using?
+>
+> **Think about:** ESLint v9 introduced a breaking change requiring `eslint.config.js` instead of `.eslintrc.js`. However, there's another issue - check your `.eslintrc.js` lines 3-8. Which plugins are referenced?
+>
+> **Investigate:** Run `npm ls @typescript-eslint/eslint-plugin` and `npm ls eslint-plugin-react`. Are these packages installed? Check your `package.json` devDependencies.
+>
+> **Action needed:** You have two paths:
+> 1. Downgrade ESLint to v8: `npm install eslint@^8.57.0 --save-dev`
+> 2. OR install the missing ESLint plugins: `@typescript-eslint/eslint-plugin`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-native`
+>
+> Choose option 1 for now (simpler). In Task 4, the plan expects ESLint to pass successfully.
+
+### Task 7: Environment Variable Configuration
+
+> **Consider:** Looking at your `app.json` lines 19, 32, and 44, what value is set for the Google Maps API key? Is this coming from an environment variable or is it hardcoded?
+>
+> **Reflect:** The plan says to "configure environment variables for Expo" using `app.config.js` with `dotenv`. What filename are you currently using for Expo configuration?
+>
+> **Think about:** Read the PLAN_REVIEW.md file at lines 13-71 (Critical Issue #1). The tech lead specifically flagged this as a critical ambiguity. The current implementation hardcodes `"your_api_key_here"`.
+>
+> **Review Phase-1.md Task 7, Step 5** (lines 515-517): The plan says "For Expo to read .env files, you may need to use a library like dotenv or expo-env - Research the current best practice for Expo environment variables."
+>
+> **Question:** Did you complete this research and implementation? Currently, your setup doesn't read from `.env` - it has placeholders in `app.json`.
+>
+> **Action needed:**
+> 1. Install dotenv: `npm install dotenv --save-dev`
+> 2. Rename `app.json` to `app.config.js`
+> 3. Convert JSON structure to JavaScript module with `export default`
+> 4. Add `require('dotenv').config();` at the top
+> 5. Replace `"your_api_key_here"` with `process.env.GOOGLE_MAPS_API_KEY`
+> 6. Create `.env` file with: `GOOGLE_MAPS_API_KEY=your_actual_key_here`
+> 7. Verify `.env` is in `.gitignore`
+>
+> This matches the tech lead's recommendation and ensures API keys aren't hardcoded.
+
+### Code Quality Review
+
+> **Consider:** Your implementation shows good code quality in most areas:
+> - ✅ TypeScript strict mode enabled
+> - ✅ Type definitions match Phase-0 specifications
+> - ✅ Navigation properly type-safe
+> - ✅ MapScreen implements location permissions correctly
+> - ✅ Tests are passing (9/9)
+> - ✅ Clean commit messages following conventional commits format
+>
+> **Think about:** Why did some tasks (like directory structure and ESLint) not get fully completed? Did you verify each task's **Verification Checklist** before moving to the next task?
+>
+> **Best practice:** After completing each task, run through its verification checklist line by line. Don't skip to the next task until all checkboxes are verifiable.
+
+### Testing Review
+
+> **Consider:** Your tests in `__tests__/setup.test.ts` and `__tests__/navigation/RootNavigator.test.tsx` are well-written and pass. However, check the ESLint config test: does it verify that `npm run lint` passes?
+>
+> **Reflect:** Task 10 says "Verify all tests pass" but also mentions running `npm run lint`. Currently, lint fails. Should this block the phase from being considered complete?
+
+### Next Steps
+
+Once you address these issues:
+
+1. **Create missing directories** (Task 3)
+2. **Fix ESLint** by downgrading to v8 or installing plugins (Task 4)
+3. **Implement proper environment variable setup** with app.config.js + dotenv (Task 7)
+4. **Verify all task checklists** are satisfied
+5. **Re-run verification**:
+   ```bash
+   npm test              # Should pass (already does)
+   npm run type-check    # Should pass (already does)
+   npm run lint          # Should pass (currently fails)
+   ```
+
+After these fixes, Phase 1 will be ready for approval and you can proceed to Phase 2.
+
+---
+
 **Proceed to**: **[Phase 2: Google Places API Service Layer](./Phase-2.md)**
 
 Phase 2 will build on this foundation by implementing:
