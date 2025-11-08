@@ -32,6 +32,46 @@ class PlacesService {
   }
 
   /**
+   * Retry a function with exponential backoff on network errors
+   *
+   * @param fn - Async function to retry
+   * @param maxRetries - Maximum number of retry attempts (default: 3)
+   * @returns Result of the function
+   */
+  private async retryWithBackoff<T>(
+    fn: () => Promise<T>,
+    maxRetries: number = 3
+  ): Promise<T> {
+    let lastError: Error;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error as Error;
+
+        // If this is the last attempt, throw the error
+        if (attempt === maxRetries) {
+          throw lastError;
+        }
+
+        // Only retry on network errors (Axios errors)
+        if (!axios.isAxiosError(error)) {
+          throw lastError;
+        }
+
+        // Calculate delay with exponential backoff: 2^attempt * 1000ms
+        const delay = Math.pow(2, attempt) * 1000;
+
+        // Wait before retrying
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+
+    throw lastError!;
+  }
+
+  /**
    * Fetch nearby restaurants using Google Places Nearby Search API
    *
    * @param lat - Latitude of user location
@@ -45,16 +85,18 @@ class PlacesService {
     radius: number = 10000
   ): Promise<NearbyPlace[]> {
     try {
-      const url = API_ENDPOINTS.placesNearbySearch;
-      const params = {
-        location: `${lat},${lng}`,
-        radius: radius.toString(),
-        type: 'restaurant',
-        keyword: 'Pizza',
-        key: this.apiKey,
-      };
+      const response = await this.retryWithBackoff(async () => {
+        const url = API_ENDPOINTS.placesNearbySearch;
+        const params = {
+          location: `${lat},${lng}`,
+          radius: radius.toString(),
+          type: 'restaurant',
+          keyword: 'Pizza',
+          key: this.apiKey,
+        };
 
-      const response = await axios.get(url, { params });
+        return await axios.get(url, { params });
+      });
 
       // Parse response to NearbyPlace array
       const results = response.data.results || [];
@@ -106,13 +148,16 @@ class PlacesService {
 
     // Cache miss: Fetch from API
     try {
-      const url = API_ENDPOINTS.placesDetails;
-      const params = {
-        place_id: placeId,
-        key: this.apiKey,
-      };
+      const response = await this.retryWithBackoff(async () => {
+        const url = API_ENDPOINTS.placesDetails;
+        const params = {
+          place_id: placeId,
+          key: this.apiKey,
+        };
 
-      const response = await axios.get(url, { params });
+        return await axios.get(url, { params });
+      });
+
       const result = response.data.result;
 
       // Parse response to PlaceDetails

@@ -9,6 +9,9 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 // Mock cache utilities
 jest.mock('../../src/utils/cache');
 
+// Create a mock for axios.isAxiosError
+const mockIsAxiosError = jest.fn();
+
 describe('PlacesService', () => {
   let service: PlacesService;
 
@@ -18,6 +21,10 @@ describe('PlacesService', () => {
     // @ts-ignore - Accessing private static property for testing
     PlacesService.instance = undefined;
     service = PlacesService.getInstance();
+
+    // Setup axios.isAxiosError mock
+    (axios.isAxiosError as jest.Mock) = mockIsAxiosError;
+    mockIsAxiosError.mockReturnValue(false); // Default: not an axios error
   });
 
   describe('Singleton pattern', () => {
@@ -397,6 +404,80 @@ describe('PlacesService', () => {
       await expect(service.getPlaceDetails(mockPlaceId)).rejects.toThrow(
         'Failed to fetch place details'
       );
+    });
+  });
+
+  describe('Retry logic', () => {
+    it('should succeed on first try without retry', async () => {
+      const mockResponse = {
+        data: {
+          results: [],
+        },
+      };
+
+      mockedAxios.get.mockResolvedValue(mockResponse);
+
+      await service.getNearbyRestaurants(37.39, -122.08);
+
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should retry on network error and succeed', async () => {
+      const mockResponse = {
+        data: {
+          results: [],
+        },
+      };
+
+      let callCount = 0;
+      mockedAxios.get.mockImplementation(() => {
+        callCount++;
+        if (callCount === 1) {
+          const error = new Error('Network Error');
+          (error as any).isAxiosError = true;
+          return Promise.reject(error);
+        }
+        return Promise.resolve(mockResponse);
+      });
+
+      // Mock axios.isAxiosError to return true for network errors
+      mockIsAxiosError.mockReturnValue(true);
+
+      const result = await service.getNearbyRestaurants(37.39, -122.08);
+
+      expect(callCount).toBe(2); // First fail, then success
+      expect(result).toEqual([]);
+    }, 10000); // Increased timeout for retry delays
+
+    it('should fail after max retries', async () => {
+      const networkError = new Error('Network Error');
+      (networkError as any).isAxiosError = true;
+      mockedAxios.get.mockRejectedValue(networkError);
+
+      // Mock axios.isAxiosError to return true for network errors
+      mockIsAxiosError.mockReturnValue(true);
+
+      await expect(service.getNearbyRestaurants(37.39, -122.08)).rejects.toThrow(
+        'Failed to fetch nearby restaurants'
+      );
+
+      // Should have tried 4 times total (initial + 3 retries)
+      expect(mockedAxios.get).toHaveBeenCalledTimes(4);
+    }, 10000); // Increased timeout for retry delays
+
+    it('should not retry on non-network errors', async () => {
+      const otherError = new Error('Not a network error');
+      mockedAxios.get.mockRejectedValue(otherError);
+
+      // Mock axios.isAxiosError to return false (non-network error)
+      mockIsAxiosError.mockReturnValue(false);
+
+      await expect(service.getNearbyRestaurants(37.39, -122.08)).rejects.toThrow(
+        'Failed to fetch nearby restaurants'
+      );
+
+      // Should only try once (no retries)
+      expect(mockedAxios.get).toHaveBeenCalledTimes(1);
     });
   });
 });
