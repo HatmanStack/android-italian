@@ -6,7 +6,7 @@ export interface MenuItem {
   id: string; // Unique identifier
   title: string; // Item name (e.g., "Mobster Pizza")
   description: string; // Item description
-  image: any; // require() asset
+  image: number; // require() asset returns a number
   category: MenuCategory; // Category enum
   position: number; // Position in category (for price lookup)
 }

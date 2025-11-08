@@ -2,6 +2,8 @@
  * Navigation tests to verify screens exist
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 describe('RootNavigator Configuration', () => {
   it('should have screen components exported', () => {
     const { MenuScreen } = require('../../src/screens/MenuScreen');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import MapView, { Region } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -14,16 +14,12 @@ interface Props {
 }
 
 export const MapScreen: React.FC<Props> = () => {
-  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [_userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [mapRegion, setMapRegion] = useState<Region>(MAP_CONFIG.initialRegion);
   const [loading, setLoading] = useState<boolean>(true);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
 
-  useEffect(() => {
-    requestLocationPermission();
-  }, []);
-
-  const requestLocationPermission = async () => {
+  const requestLocationPermission = useCallback(async () => {
     try {
       // Request foreground location permissions
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -70,7 +66,13 @@ export const MapScreen: React.FC<Props> = () => {
         [{ text: 'OK' }]
       );
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Initialize location on mount - this is a legitimate use case for setState in effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    requestLocationPermission();
+  }, [requestLocationPermission]);
 
   if (loading) {
     return (
