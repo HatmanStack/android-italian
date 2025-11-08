@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.italian.restaurant",
+      "config": {
+        "googleMapsApiKey": "your_api_key_here"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,10 +25,31 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.italian.restaurant",
+      "config": {
+        "googleMaps": {
+          "apiKey": "your_api_key_here"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "googleMapsApiKey": "your_api_key_here"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Italian Restaurant to use your location to find nearby restaurants."
+        }
+      ]
+    ]
   }
 }
