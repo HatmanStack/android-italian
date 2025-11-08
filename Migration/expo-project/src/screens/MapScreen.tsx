@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import MapView, { Region } from 'react-native-maps';
+import { View, Text, StyleSheet, Alert, ActivityIndicator, Button } from 'react-native';
+import MapView, { Region, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation.types';
 import { UserLocation } from '../types/location.types';
 import { MAP_CONFIG } from '../constants/config';
+import { useLocationStore } from '../stores/locationStore';
 
 type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Map'>;
 
@@ -14,7 +15,17 @@ interface Props {
 }
 
 export const MapScreen: React.FC<Props> = () => {
-  const [_userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  // Zustand store
+  const {
+    setUserLocation,
+    fetchNearbyPlaces,
+    nearbyPlaces,
+    loading: placesLoading,
+    error: placesError,
+    clearError,
+  } = useLocationStore();
+
+  // Local UI state
   const [mapRegion, setMapRegion] = useState<Region>(MAP_CONFIG.initialRegion);
   const [loading, setLoading] = useState<boolean>(true);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
@@ -46,6 +57,7 @@ export const MapScreen: React.FC<Props> = () => {
         accuracy: location.coords.accuracy || undefined,
       };
 
+      // Update store with user location
       setUserLocation(userLoc);
 
       // Update map region to center on user location
@@ -55,6 +67,9 @@ export const MapScreen: React.FC<Props> = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
+
+      // Fetch nearby restaurants
+      await fetchNearbyPlaces(userLoc.latitude, userLoc.longitude);
 
       setLoading(false);
     } catch (error) {
@@ -67,6 +82,23 @@ export const MapScreen: React.FC<Props> = () => {
       );
     }
   }, []);
+
+  // Marker press handler
+  const handleMarkerPress = useCallback((placeId: string, placeName: string) => {
+    console.log('Marker pressed:', placeId);
+    // Phase 3 will open bottom sheet with place details
+    Alert.alert('Restaurant Selected', placeName, [{ text: 'OK' }]);
+  }, []);
+
+  // Retry handler for error state
+  const handleRetry = useCallback(async () => {
+    clearError();
+    const state = useLocationStore.getState();
+    const userLocation = state.userLocation;
+    if (userLocation) {
+      await fetchNearbyPlaces(userLocation.latitude, userLocation.longitude);
+    }
+  }, [clearError, fetchNearbyPlaces]);
 
   useEffect(() => {
     // Initialize location on mount - this is a legitimate use case for setState in effect
@@ -94,8 +126,38 @@ export const MapScreen: React.FC<Props> = () => {
         showsScale={true}
         onRegionChangeComplete={setMapRegion}
       >
-        {/* Markers for nearby restaurants will be added in Phase 3 */}
+        {/* Markers for nearby restaurants */}
+        {nearbyPlaces.map((place) => (
+          <Marker
+            key={place.placeId}
+            coordinate={{
+              latitude: place.lat,
+              longitude: place.lng,
+            }}
+            title={place.name}
+            description={place.openNow ? 'Open Now' : 'Closed'}
+            onPress={() => handleMarkerPress(place.placeId, place.name)}
+          />
+        ))}
       </MapView>
+
+      {/* Loading overlay for nearby places */}
+      {placesLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#c41e3a" />
+          <Text style={styles.loadingText}>Loading nearby restaurants...</Text>
+        </View>
+      )}
+
+      {/* Error banner */}
+      {placesError && (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{placesError}</Text>
+          <Button title="Retry" onPress={handleRetry} color="#c41e3a" />
+        </View>
+      )}
+
+      {/* Permission denied banner */}
       {permissionDenied && (
         <View style={styles.warningBanner}>
           <Text style={styles.warningText}>
@@ -120,6 +182,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  loadingOverlay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -75 }, { translateY: -50 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    minWidth: 150,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
@@ -137,5 +215,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontSize: 14,
+  },
+  errorBanner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#f44336',
+    padding: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+    marginRight: 10,
   },
 });
