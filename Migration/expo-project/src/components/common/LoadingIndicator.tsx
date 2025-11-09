@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet, ViewStyle } from 'react-native';
+import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import { colors } from '../../constants/colors';
 import { spacing, typography } from '../../constants/theme';
 
@@ -16,7 +16,7 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   overlay = false,
   color = colors.primary,
 }) => {
-  const containerStyle: ViewStyle = overlay
+  const containerStyle = overlay
     ? [styles.container, styles.overlay]
     : styles.container;
 
