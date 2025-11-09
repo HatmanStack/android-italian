@@ -34,6 +34,7 @@ export const MapScreen: React.FC<Props> = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
   const [isLoadingPlaceDetails, setIsLoadingPlaceDetails] = useState<boolean>(false);
+  const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
 
   const requestLocationPermission = useCallback(async () => {
     try {
@@ -92,6 +93,8 @@ export const MapScreen: React.FC<Props> = () => {
   const handleMarkerPress = useCallback((placeId: string) => {
     // Set loading state for bottom sheet
     setIsLoadingPlaceDetails(true);
+    // Track selected marker for highlighting
+    setSelectedMarker(placeId);
     // Fetch place details and open bottom sheet
     selectPlace(placeId);
   }, [selectPlace]);
@@ -99,6 +102,7 @@ export const MapScreen: React.FC<Props> = () => {
   // Handle close bottom sheet
   const handleCloseBottomSheet = useCallback(() => {
     setIsLoadingPlaceDetails(false);
+    setSelectedMarker(null);
     clearSelectedPlace();
   }, [clearSelectedPlace]);
 
@@ -155,6 +159,7 @@ export const MapScreen: React.FC<Props> = () => {
             }}
             title={place.name}
             description={place.openNow ? 'Open Now' : 'Closed'}
+            pinColor={selectedMarker === place.placeId ? '#c41e3a' : undefined}
             onPress={() => handleMarkerPress(place.placeId)}
           />
         ))}
