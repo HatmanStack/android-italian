@@ -28,8 +28,8 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
 
   // Order customization state
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
+  // Note: toppingsAdded holds BOTH added and removed toppings (distinguished by direction: 'ADD' | 'REMOVE')
   const [toppingsAdded, setToppingsAdded] = useState<Topping[]>([]);
-  const [toppingsRemoved, setToppingsRemoved] = useState<Topping[]>([]);
   const [crustIndex, setCrustIndex] = useState(0);
   const [comments, setComments] = useState('');
 
@@ -39,7 +39,7 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
   const totalPrice = PriceCalculator.calculateOrderItemTotal(
     basePrice,
     toppingsAdded,
-    toppingsRemoved,
+    [], // toppingsRemoved not used (all toppings tracked in toppingsAdded with direction field)
     crustPrice
   );
 
@@ -47,7 +47,6 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
     setSelectedSizeIndex(sizeIndex);
     // Reset toppings when size changes (prices vary by size)
     setToppingsAdded([]);
-    setToppingsRemoved([]);
   }, []);
 
   const handleToppingAdd = useCallback((topping: Topping) => {
@@ -161,7 +160,6 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
           category={menuItem.category}
           sizeIndex={selectedSizeIndex}
           toppingsAdded={toppingsAdded}
-          toppingsRemoved={toppingsRemoved}
           onToppingAdd={handleToppingAdd}
           onToppingRemove={handleToppingRemove}
         />

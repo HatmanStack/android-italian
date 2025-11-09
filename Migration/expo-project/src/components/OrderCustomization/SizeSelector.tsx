@@ -12,6 +12,11 @@ interface Props {
 
 /**
  * Get available sizes for a menu item based on category and position
+ *
+ * Note: This function uses position-based logic to match the Android implementation.
+ * Position values are fixed in menuData.ts and should not be reordered without
+ * updating this logic. Consider adding a 'sizeCategory' field to MenuItem for
+ * more robust identification if menu structure changes frequently.
  */
 export function getSizesForItem(item: MenuItem): string[] {
   const { category, position } = item;

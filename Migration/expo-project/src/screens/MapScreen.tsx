@@ -48,6 +48,12 @@ export const MapScreen: React.FC<Props> = () => {
 
       if (status !== 'granted') {
         setPermissionDenied(true);
+        // Use default location
+        setMapRegion(MAP_CONFIG.initialRegion);
+        await fetchNearbyPlaces(
+          MAP_CONFIG.initialRegion.latitude,
+          MAP_CONFIG.initialRegion.longitude
+        );
         setLoading(false);
         Alert.alert(
           'Permission Denied',
@@ -85,6 +91,12 @@ export const MapScreen: React.FC<Props> = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error getting location:', error);
+      // Use default location on error
+      setMapRegion(MAP_CONFIG.initialRegion);
+      await fetchNearbyPlaces(
+        MAP_CONFIG.initialRegion.latitude,
+        MAP_CONFIG.initialRegion.longitude
+      );
       setLoading(false);
       Alert.alert(
         'Location Error',

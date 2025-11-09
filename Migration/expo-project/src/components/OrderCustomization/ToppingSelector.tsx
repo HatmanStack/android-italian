@@ -8,8 +8,8 @@ import { PriceCalculator } from '../../utils/priceCalculator';
 interface Props {
   category: MenuCategory;
   sizeIndex: number;
+  /** Array containing both ADD and REMOVE toppings (distinguished by direction field) */
   toppingsAdded: Topping[];
-  toppingsRemoved: Topping[];
   onToppingAdd: (topping: Topping) => void;
   onToppingRemove: (toppingName: string) => void;
 }
@@ -26,7 +26,6 @@ export const ToppingSelector: React.FC<Props> = ({
   category,
   sizeIndex,
   toppingsAdded,
-  toppingsRemoved: _toppingsRemoved,
   onToppingAdd,
   onToppingRemove,
 }) => {

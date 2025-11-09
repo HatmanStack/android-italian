@@ -6,8 +6,8 @@ app/src/main/res/values/secrets.xml
 .idea/
 local.properties/
 
-# Node modules and package files (should only be in Migration/expo-project/)
-node_modules/
-package-lock.json
-package.json
+# Node modules and package files (scoped to Migration/expo-project/)
+Migration/expo-project/node_modules/
+Migration/expo-project/package-lock.json
+Migration/expo-project/.env
 

@@ -18,7 +18,7 @@ class PlacesService {
 
   private constructor() {
     this.apiKey = GOOGLE_MAPS_API_KEY;
-    this.loadCacheFromStorage(); // Load persisted cache on initialization
+    // Cache loads lazily from AsyncStorage on-demand in getPlaceDetails()
   }
 
   /**
@@ -114,15 +114,6 @@ class PlacesService {
       console.error('Failed to fetch nearby restaurants:', error);
       throw new Error('Failed to fetch nearby restaurants');
     }
-  }
-
-  /**
-   * Load cached place details from AsyncStorage into memory cache
-   * Called during service initialization
-   */
-  private async loadCacheFromStorage(): Promise<void> {
-    // This method loads cache asynchronously but doesn't block initialization
-    // Cache will be populated in the background
   }
 
   /**

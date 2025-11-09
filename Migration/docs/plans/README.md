@@ -204,7 +204,7 @@ This migration is divided into 5 sequential phases, each designed to fit within 
 
 The final Expo project structure will be organized as follows:
 
-```
+```plaintext
 Migration/
 ├── expo-project/
 │   ├── src/

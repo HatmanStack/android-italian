@@ -40,7 +40,7 @@ export class PriceCalculator {
         // Desserts have 4 sizes except the cookie
         if (position === 3) {
           // Normous Cookie has only one price
-          return 999; // From arrays.xml cookie_price
+          return priceArrays.cookie_price;
         }
         return priceArrays.desert_price[sizeIndex] || 0;
 
@@ -65,7 +65,7 @@ export class PriceCalculator {
     // Calzone (position 22)
     if (position === 22) {
       // Calzone has only 2 sizes
-      return sizeIndex === 0 ? 899 : 1499; // From arrays.xml calzone_price
+      return priceArrays.calzone_price[sizeIndex] || 0;
     }
 
     // Positions 0-10 are signature pizzas

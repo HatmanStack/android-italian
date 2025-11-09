@@ -5,8 +5,22 @@ import Constants from 'expo-constants';
  */
 
 // Google Maps API Key from app.json extra config
-export const GOOGLE_MAPS_API_KEY =
-  Constants.expoConfig?.extra?.googleMapsApiKey || 'your_api_key_here';
+const apiKey = Constants.expoConfig?.extra?.googleMapsApiKey;
+
+// Validate API key is configured (allow placeholder in test environment)
+if (
+  (!apiKey || apiKey === 'your_api_key_here') &&
+  process.env.NODE_ENV !== 'test'
+) {
+  console.error(
+    '⚠️  GOOGLE_MAPS_API_KEY is not configured!\n' +
+    'Please set it in your .env file:\n' +
+    '  GOOGLE_MAPS_API_KEY=your_actual_key_here\n' +
+    'See Migration/expo-project/.env.example for details.'
+  );
+}
+
+export const GOOGLE_MAPS_API_KEY = apiKey || 'your_api_key_here';
 
 // Map configuration
 export const MAP_CONFIG = {

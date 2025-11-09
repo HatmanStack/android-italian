@@ -110,6 +110,12 @@ export const priceArrays: PriceArrays = {
   // Dessert prices (by size: mini, small, medium, large)
   desert_price: [399, 699, 999, 1299],
 
+  // Normous Cookie price (single size)
+  cookie_price: 999,
+
+  // Calzone prices (Personal, Large)
+  calzone_price: [899, 1499],
+
   // Salad prices
   salad_price: [299, 799], // Garden Salad, Italian Salad
 };

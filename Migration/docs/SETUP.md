@@ -360,7 +360,7 @@ Cmd+Shift+P → "TypeScript: Restart TS Server"
 
 #### "SDK location not found" (Android)
 Create `local.properties` in `android/`:
-```
+```properties
 sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
 ```
 

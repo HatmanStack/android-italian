@@ -39,6 +39,8 @@ export interface PriceArrays {
   crust_price: number[];
   salad_price: number[];
   desert_price: number[];
+  cookie_price: number; // Normous Cookie (single price)
+  calzone_price: number[]; // [Personal, Large]
 }
 
 export type PriceArrayKey = keyof PriceArrays;

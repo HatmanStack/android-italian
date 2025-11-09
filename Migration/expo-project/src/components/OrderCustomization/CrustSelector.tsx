@@ -12,7 +12,7 @@ interface Props {
 
 /**
  * Check if crust options are applicable for a category
- * Only pizzas and calzones have crust options
+ * Only pizzas have crust options (calzones are in the pizza category)
  */
 function canHaveCrust(category: MenuCategory): boolean {
   return category === MenuCategory.PIZZA;
