@@ -29,11 +29,22 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
     [navigation]
   );
 
+  const handleNutritionPress = useCallback(
+    (itemName: string) => {
+      navigation.navigate('Nutrition', { itemName });
+    },
+    [navigation]
+  );
+
   const renderMenuItem = useCallback(
     ({ item }: { item: MenuItemType }) => (
-      <MenuItem item={item} onPress={handleMenuItemPress} />
+      <MenuItem
+        item={item}
+        onPress={handleMenuItemPress}
+        onNutritionPress={handleNutritionPress}
+      />
     ),
-    [handleMenuItemPress]
+    [handleMenuItemPress, handleNutritionPress]
   );
 
   const keyExtractor = useCallback((item: MenuItemType) => item.id, []);
