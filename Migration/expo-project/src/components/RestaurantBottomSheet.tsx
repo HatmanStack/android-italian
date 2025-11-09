@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
 }
 
-export const RestaurantBottomSheet: React.FC<Props> = ({
+const RestaurantBottomSheetComponent: React.FC<Props> = ({
   placeDetails,
   isLoading,
   onClose,
@@ -338,3 +338,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+// Memoize component to prevent unnecessary re-renders
+export const RestaurantBottomSheet = React.memo(RestaurantBottomSheetComponent);

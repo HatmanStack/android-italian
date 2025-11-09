@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Alert, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
 import MapView, { Region, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -146,6 +146,23 @@ export const MapScreen: React.FC<Props> = () => {
     requestLocationPermission();
   }, [requestLocationPermission]);
 
+  // Memoize markers to prevent re-rendering on every state change
+  const markers = useMemo(() => {
+    return nearbyPlaces.map((place) => (
+      <Marker
+        key={place.placeId}
+        coordinate={{
+          latitude: place.lat,
+          longitude: place.lng,
+        }}
+        title={place.name}
+        description={place.openNow ? 'Open Now' : 'Closed'}
+        pinColor={selectedMarker === place.placeId ? '#c41e3a' : undefined}
+        onPress={() => handleMarkerPress(place.placeId)}
+      />
+    ));
+  }, [nearbyPlaces, selectedMarker, handleMarkerPress]);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -168,19 +185,7 @@ export const MapScreen: React.FC<Props> = () => {
         onRegionChangeComplete={setMapRegion}
       >
         {/* Markers for nearby restaurants */}
-        {nearbyPlaces.map((place) => (
-          <Marker
-            key={place.placeId}
-            coordinate={{
-              latitude: place.lat,
-              longitude: place.lng,
-            }}
-            title={place.name}
-            description={place.openNow ? 'Open Now' : 'Closed'}
-            pinColor={selectedMarker === place.placeId ? '#c41e3a' : undefined}
-            onPress={() => handleMarkerPress(place.placeId)}
-          />
-        ))}
+        {markers}
       </MapView>
 
       {/* Loading overlay for nearby places */}
