@@ -1,0 +1,119 @@
+import React, { useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import { MenuItem as MenuItemType } from '../types/menu.types';
+
+interface Props {
+  item: MenuItemType;
+  onPress: (item: MenuItemType) => void;
+  onNutritionPress?: (itemName: string) => void;
+}
+
+const MenuItemComponent: React.FC<Props> = ({ item, onPress, onNutritionPress }) => {
+  const handlePress = useCallback(() => {
+    onPress(item);
+  }, [onPress, item]);
+
+  const handleNutritionPress = useCallback(
+    (e: GestureResponderEvent) => {
+      e.stopPropagation();
+      onNutritionPress?.(item.title);
+    },
+    [onNutritionPress, item.title]
+  );
+
+  return (
+    <TouchableOpacity
+      style={styles.container}
+      onPress={handlePress}
+      activeOpacity={0.7}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.title}. ${item.description}`}
+      accessibilityHint="Tap to customize and add to cart"
+    >
+      <FastImage
+        source={item.image}
+        style={styles.image}
+        resizeMode={FastImage.resizeMode.cover}
+        accessible={true}
+        accessibilityLabel={`${item.title} image`}
+      />
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title} numberOfLines={2} accessibilityRole="header">
+            {item.title}
+          </Text>
+          {onNutritionPress && (
+            <TouchableOpacity
+              style={styles.infoButton}
+              onPress={handleNutritionPress}
+              activeOpacity={0.7}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Nutrition information"
+              accessibilityHint={`View nutrition facts for ${item.title}`}
+            >
+              <Text style={styles.infoIcon}>ℹ️</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <Text style={styles.description} numberOfLines={3}>
+          {item.description}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    flexDirection: 'row',
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#f0f0f0',
+  },
+  content: {
+    flex: 1,
+    padding: 12,
+    justifyContent: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 4,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+  },
+  infoButton: {
+    padding: 4,
+    marginLeft: 8,
+  },
+  infoIcon: {
+    fontSize: 16,
+  },
+  description: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+  },
+});
+
+export const MenuItem = React.memo(MenuItemComponent);
