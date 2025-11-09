@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Alert, ActivityIndicator, Button } from 'react-native';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { View, Text, StyleSheet, Alert, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
 import MapView, { Region, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { MaterialIcons } from '@expo/vector-icons';
 import { RootStackParamList } from '../types/navigation.types';
 import { UserLocation } from '../types/location.types';
 import { MAP_CONFIG } from '../constants/config';
@@ -16,6 +17,9 @@ interface Props {
 }
 
 export const MapScreen: React.FC<Props> = () => {
+  // Refs
+  const mapRef = useRef<MapView>(null);
+
   // Zustand store
   const {
     setUserLocation,
@@ -27,6 +31,7 @@ export const MapScreen: React.FC<Props> = () => {
     loading: placesLoading,
     error: placesError,
     clearError,
+    userLocation,
   } = useLocationStore();
 
   // Local UI state
@@ -123,6 +128,18 @@ export const MapScreen: React.FC<Props> = () => {
     }
   }, [clearError, fetchNearbyPlaces]);
 
+  // Re-center map on user location
+  const handleRecenterMap = useCallback(() => {
+    if (userLocation && mapRef.current) {
+      mapRef.current.animateToRegion({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }, 1000);
+    }
+  }, [userLocation]);
+
   useEffect(() => {
     // Initialize location on mount - this is a legitimate use case for setState in effect
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -141,10 +158,11 @@ export const MapScreen: React.FC<Props> = () => {
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         style={styles.map}
         region={mapRegion}
         showsUserLocation={!permissionDenied}
-        showsMyLocationButton={!permissionDenied}
+        showsMyLocationButton={false}
         showsCompass={true}
         showsScale={true}
         onRegionChangeComplete={setMapRegion}
@@ -188,6 +206,25 @@ export const MapScreen: React.FC<Props> = () => {
             Location permission denied. Showing default location.
           </Text>
         </View>
+      )}
+
+      {/* No results message */}
+      {!placesLoading && nearbyPlaces.length === 0 && !permissionDenied && (
+        <View style={styles.noResultsBanner}>
+          <MaterialIcons name="info-outline" size={24} color="#666" />
+          <Text style={styles.noResultsText}>No restaurants found nearby</Text>
+        </View>
+      )}
+
+      {/* Floating action button - Re-center map */}
+      {userLocation && !permissionDenied && (
+        <TouchableOpacity
+          style={styles.fabButton}
+          onPress={handleRecenterMap}
+          activeOpacity={0.8}
+        >
+          <MaterialIcons name="my-location" size={24} color="#fff" />
+        </TouchableOpacity>
       )}
 
       {/* Restaurant details bottom sheet */}
@@ -263,5 +300,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     flex: 1,
     marginRight: 10,
+  },
+  noResultsBanner: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -100 }, { translateY: -30 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: 20,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  noResultsText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  fabButton: {
+    position: 'absolute',
+    bottom: 120,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#c41e3a',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
