@@ -1,7 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation.types';
+import { MenuCategory, MenuItem as MenuItemType } from '../types/menu.types';
+import { getMenuItemsByCategory } from '../data/menuData';
+import { CategoryTabs } from '../components/CategoryTabs';
+import { MenuItem } from '../components/MenuItem';
 
 type MenuScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Menu'>;
 
@@ -10,13 +14,42 @@ interface Props {
 }
 
 export const MenuScreen: React.FC<Props> = ({ navigation }) => {
+  const [selectedCategory, setSelectedCategory] = useState<MenuCategory>(MenuCategory.PIZZA);
+
+  const menuItems = getMenuItemsByCategory(selectedCategory);
+
+  const handleCategoryChange = useCallback((category: MenuCategory) => {
+    setSelectedCategory(category);
+  }, []);
+
+  const handleMenuItemPress = useCallback(
+    (item: MenuItemType) => {
+      navigation.navigate('Order', { menuItem: item });
+    },
+    [navigation]
+  );
+
+  const renderMenuItem = useCallback(
+    ({ item }: { item: MenuItemType }) => (
+      <MenuItem item={item} onPress={handleMenuItemPress} />
+    ),
+    [handleMenuItemPress]
+  );
+
+  const keyExtractor = useCallback((item: MenuItemType) => item.id, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Menu Screen</Text>
-      <Text style={styles.subtitle}>Browse menu items (Coming in Phase 4)</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Go to Map" onPress={() => navigation.navigate('Map')} />
-      </View>
+      <CategoryTabs
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
+      />
+      <FlatList
+        data={menuItems}
+        renderItem={renderMenuItem}
+        keyExtractor={keyExtractor}
+        contentContainerStyle={styles.listContent}
+      />
     </View>
   );
 };
@@ -24,21 +57,9 @@ export const MenuScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    marginTop: 20,
+  listContent: {
+    paddingVertical: 8,
   },
 });
