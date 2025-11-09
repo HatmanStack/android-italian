@@ -13,7 +13,7 @@ interface Props {
 /**
  * Get available sizes for a menu item based on category and position
  */
-function getSizesForItem(item: MenuItem): string[] {
+export function getSizesForItem(item: MenuItem): string[] {
   const { category, position } = item;
 
   switch (category) {
