@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { OrderItem } from '../../types/order.types';
 import { PriceCalculator } from '../../utils/priceCalculator';
 
@@ -8,10 +9,14 @@ interface Props {
   onRemove: (itemId: string) => void;
 }
 
-export const CartItem: React.FC<Props> = ({ item, onRemove }) => {
+const CartItemComponent: React.FC<Props> = ({ item, onRemove }) => {
+  const handleRemove = useCallback(() => {
+    onRemove(item.id);
+  }, [onRemove, item.id]);
+
   return (
     <View style={styles.container}>
-      <Image source={item.menuItem.image} style={styles.image} resizeMode="cover" />
+      <FastImage source={item.menuItem.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
 
       <View style={styles.content}>
         <Text style={styles.title}>{item.menuItem.title}</Text>
@@ -23,7 +28,7 @@ export const CartItem: React.FC<Props> = ({ item, onRemove }) => {
 
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() => onRemove(item.id)}
+        onPress={handleRemove}
         activeOpacity={0.7}
       >
         <Text style={styles.removeIcon}>×</Text>
@@ -86,3 +91,5 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
 });
+
+export const CartItem = React.memo(CartItemComponent);

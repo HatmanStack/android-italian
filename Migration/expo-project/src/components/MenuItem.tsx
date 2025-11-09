@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { MenuItem as MenuItemType } from '../types/menu.types';
@@ -9,16 +9,23 @@ interface Props {
   onNutritionPress?: (itemName: string) => void;
 }
 
-export const MenuItem: React.FC<Props> = ({ item, onPress, onNutritionPress }) => {
-  const handleNutritionPress = (e: GestureResponderEvent) => {
-    e.stopPropagation();
-    onNutritionPress?.(item.title);
-  };
+const MenuItemComponent: React.FC<Props> = ({ item, onPress, onNutritionPress }) => {
+  const handlePress = useCallback(() => {
+    onPress(item);
+  }, [onPress, item]);
+
+  const handleNutritionPress = useCallback(
+    (e: GestureResponderEvent) => {
+      e.stopPropagation();
+      onNutritionPress?.(item.title);
+    },
+    [onNutritionPress, item.title]
+  );
 
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => onPress(item)}
+      onPress={handlePress}
       activeOpacity={0.7}
     >
       <FastImage source={item.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
@@ -94,3 +101,5 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
+
+export const MenuItem = React.memo(MenuItemComponent);
