@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation.types';
 import { Topping, OrderItem } from '../types/order.types';
+import { MenuCategory } from '../types/menu.types';
 import { SizeSelector, getSizesForItem } from '../components/OrderCustomization/SizeSelector';
 import { ToppingSelector } from '../components/OrderCustomization/ToppingSelector';
 import { CrustSelector } from '../components/OrderCustomization/CrustSelector';
@@ -75,7 +76,7 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
     let summary = `${sizeName} ${menuItem.title}`;
 
     // Add crust type if applicable and not original
-    if (menuItem.category === 'PIZZA' && crustIndex !== 0) {
+    if (menuItem.category === MenuCategory.PIZZA && crustIndex !== 0) {
       summary += ` - ${crustTypes[crustIndex]}`;
     }
 
@@ -108,7 +109,7 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
       sizeIndex: selectedSizeIndex,
       toppingsAdded,
       toppingsRemoved: [], // Not using toppingsRemoved separately, REMOVE direction is in toppingsAdded
-      crustType: menuItem.category === 'PIZZA' ? crustTypes[crustIndex] : undefined,
+      crustType: menuItem.category === MenuCategory.PIZZA ? crustTypes[crustIndex] : undefined,
       comments: comments.trim() || undefined,
       totalPrice,
       orderSummary: buildOrderSummary(),
