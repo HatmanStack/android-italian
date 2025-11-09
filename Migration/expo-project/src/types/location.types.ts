@@ -19,8 +19,8 @@ export interface PlaceDetails {
   placeId: string;
   name: string;
   formattedAddress: string;
-  formattedPhoneNumber: string;
-  weekdayText: string[]; // Hours (array of strings)
+  formattedPhoneNumber?: string;
+  weekdayText?: string[]; // Hours (array of strings)
   photoReference?: string;
   lat: number;
   lng: number;

@@ -31,6 +31,28 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   clear: jest.fn(() => Promise.resolve()),
 }));
 
+// Create global mock functions for Linking
+global.mockLinking = {
+  openURL: jest.fn(() => Promise.resolve(true)),
+  canOpenURL: jest.fn(() => Promise.resolve(true)),
+};
+
+// Create global mock for Alert
+global.mockAlert = jest.fn();
+global.mockAlertModule = {
+  alert: global.mockAlert,
+};
+
+// Mock Linking API
+jest.mock('react-native/Libraries/Linking/Linking', () => global.mockLinking);
+
+// Mock Alert API - using default export pattern
+jest.mock('react-native/Libraries/Alert/Alert', () => ({
+  __esModule: true,
+  default: global.mockAlertModule,
+  alert: global.mockAlert,
+}));
+
 // Mock react-native-maps
 jest.mock('react-native-maps', () => {
   const { View } = require('react-native');
@@ -78,15 +100,19 @@ jest.mock('react-native-gesture-handler', () => {
 jest.mock('react-native-fast-image', () => {
   const React = require('react');
   const { Image } = require('react-native');
+
+  // Create a FastImage component that extends Image with resizeMode property
+  const FastImage = (props) => React.createElement(Image, props);
+  FastImage.resizeMode = {
+    contain: 'contain',
+    cover: 'cover',
+    stretch: 'stretch',
+    center: 'center',
+  };
+
   return {
     __esModule: true,
-    default: Image,
-    resizeMode: {
-      contain: 'contain',
-      cover: 'cover',
-      stretch: 'stretch',
-      center: 'center',
-    },
+    default: FastImage,
   };
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 
 interface Props {
   width?: number | string;
@@ -14,6 +14,7 @@ export const Skeleton: React.FC<Props> = ({
   borderRadius = 4,
   style,
 }) => {
+  // eslint-disable-next-line react-hooks/refs
   const opacity = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {

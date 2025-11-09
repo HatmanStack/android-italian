@@ -114,6 +114,7 @@ export const MapScreen: React.FC<Props> = () => {
   // Update loading state when selectedPlace changes
   useEffect(() => {
     if (selectedPlace !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoadingPlaceDetails(false);
     }
   }, [selectedPlace]);
