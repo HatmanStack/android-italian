@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import { MaterialIcons } from '@expo/vector-icons';
 import { PlaceDetails } from '../types/location.types';
 import { getPlacePhotoUrl, formatBusinessHours } from '../utils/placesHelpers';
+import { Skeleton } from './common/Skeleton';
 
 interface Props {
   placeDetails: PlaceDetails | null;
@@ -104,8 +105,36 @@ export const RestaurantBottomSheet: React.FC<Props> = ({
 
         {/* Content */}
         {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading details...</Text>
+          <View style={styles.detailsContainer}>
+            {/* Photo Skeleton */}
+            <Skeleton height={200} borderRadius={12} style={{ marginBottom: 16 }} />
+
+            {/* Name Skeleton */}
+            <Skeleton width="70%" height={28} style={{ marginBottom: 8 }} />
+
+            {/* Status Badge Skeleton */}
+            <Skeleton width={80} height={24} borderRadius={16} style={{ marginBottom: 16 }} />
+
+            {/* Address Skeleton */}
+            <View style={styles.infoRow}>
+              <Skeleton width={20} height={20} borderRadius={10} style={{ marginRight: 8 }} />
+              <Skeleton width="85%" height={20} />
+            </View>
+
+            {/* Phone Skeleton */}
+            <View style={styles.infoRow}>
+              <Skeleton width={20} height={20} borderRadius={10} style={{ marginRight: 8 }} />
+              <Skeleton width="60%" height={20} />
+            </View>
+
+            {/* Hours Skeleton */}
+            <View style={{ marginTop: 16 }}>
+              <View style={styles.hoursHeader}>
+                <Skeleton width={20} height={20} borderRadius={10} style={{ marginRight: 8 }} />
+                <Skeleton width={120} height={20} />
+              </View>
+              <Skeleton width="100%" height={120} borderRadius={8} style={{ marginTop: 8 }} />
+            </View>
           </View>
         ) : placeDetails ? (
           <ScrollView style={styles.detailsContainer} showsVerticalScrollIndicator={false}>
@@ -207,15 +236,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#666',
     fontWeight: 'bold',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
   },
   detailsContainer: {
     flex: 1,
