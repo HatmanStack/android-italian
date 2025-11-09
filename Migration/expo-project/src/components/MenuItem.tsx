@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, GestureResponderEvent } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, GestureResponderEvent } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { MenuItem as MenuItemType } from '../types/menu.types';
 
 interface Props {
@@ -20,7 +21,7 @@ export const MenuItem: React.FC<Props> = ({ item, onPress, onNutritionPress }) =
       onPress={() => onPress(item)}
       activeOpacity={0.7}
     >
-      <Image source={item.image} style={styles.image} resizeMode="cover" />
+      <FastImage source={item.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title} numberOfLines={2}>

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation.types';
@@ -143,7 +144,7 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
       <ScrollView style={styles.scrollView}>
         {/* Header with image and title */}
         <View style={styles.header}>
-          <Image source={menuItem.image} style={styles.image} resizeMode="cover" />
+          <FastImage source={menuItem.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
           <Text style={styles.title}>{menuItem.title}</Text>
           <Text style={styles.description}>{menuItem.description}</Text>
         </View>
