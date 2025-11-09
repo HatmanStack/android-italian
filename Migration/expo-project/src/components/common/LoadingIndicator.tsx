@@ -20,10 +20,22 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
     ? [styles.container, styles.overlay]
     : styles.container;
 
+  const accessibilityLabel = message || 'Loading';
+
   return (
-    <View style={containerStyle}>
-      <ActivityIndicator size={size} color={color} />
-      {message && <Text style={styles.message}>{message}</Text>}
+    <View
+      style={containerStyle}
+      accessible={true}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="progressbar"
+      accessibilityLiveRegion="polite"
+    >
+      <ActivityIndicator size={size} color={color} accessible={false} />
+      {message && (
+        <Text style={styles.message} accessibilityLabel={message}>
+          {message}
+        </Text>
+      )}
     </View>
   );
 };

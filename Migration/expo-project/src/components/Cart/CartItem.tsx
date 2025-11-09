@@ -14,22 +14,42 @@ const CartItemComponent: React.FC<Props> = ({ item, onRemove }) => {
     onRemove(item.id);
   }, [onRemove, item.id]);
 
+  const formattedPrice = PriceCalculator.formatPrice(item.totalPrice);
+
   return (
-    <View style={styles.container}>
-      <FastImage source={item.menuItem.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
+    <View
+      style={styles.container}
+      accessible={true}
+      accessibilityLabel={`Cart item: ${item.menuItem.title}, ${item.orderSummary}, ${formattedPrice}`}
+    >
+      <FastImage
+        source={item.menuItem.image}
+        style={styles.image}
+        resizeMode={FastImage.resizeMode.cover}
+        accessible={true}
+        accessibilityLabel={`${item.menuItem.title} image`}
+      />
 
       <View style={styles.content}>
-        <Text style={styles.title}>{item.menuItem.title}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {item.menuItem.title}
+        </Text>
         <Text style={styles.summary} numberOfLines={4}>
           {item.orderSummary}
         </Text>
-        <Text style={styles.price}>{PriceCalculator.formatPrice(item.totalPrice)}</Text>
+        <Text style={styles.price} accessibilityLabel={`Price: ${formattedPrice}`}>
+          {formattedPrice}
+        </Text>
       </View>
 
       <TouchableOpacity
         style={styles.removeButton}
         onPress={handleRemove}
         activeOpacity={0.7}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={`Remove ${item.menuItem.title} from cart`}
+        accessibilityHint="Double tap to remove this item"
       >
         <Text style={styles.removeIcon}>×</Text>
       </TouchableOpacity>

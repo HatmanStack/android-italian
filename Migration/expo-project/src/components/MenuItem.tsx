@@ -27,11 +27,21 @@ const MenuItemComponent: React.FC<Props> = ({ item, onPress, onNutritionPress })
       style={styles.container}
       onPress={handlePress}
       activeOpacity={0.7}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.title}. ${item.description}`}
+      accessibilityHint="Tap to customize and add to cart"
     >
-      <FastImage source={item.image} style={styles.image} resizeMode={FastImage.resizeMode.cover} />
+      <FastImage
+        source={item.image}
+        style={styles.image}
+        resizeMode={FastImage.resizeMode.cover}
+        accessible={true}
+        accessibilityLabel={`${item.title} image`}
+      />
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={styles.title} numberOfLines={2} accessibilityRole="header">
             {item.title}
           </Text>
           {onNutritionPress && (
@@ -39,6 +49,10 @@ const MenuItemComponent: React.FC<Props> = ({ item, onPress, onNutritionPress })
               style={styles.infoButton}
               onPress={handleNutritionPress}
               activeOpacity={0.7}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Nutrition information"
+              accessibilityHint={`View nutrition facts for ${item.title}`}
             >
               <Text style={styles.infoIcon}>ℹ️</Text>
             </TouchableOpacity>
