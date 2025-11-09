@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Linking, Platform, Alert } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import FastImage from 'react-native-fast-image';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -33,6 +33,58 @@ export const RestaurantBottomSheet: React.FC<Props> = ({
       bottomSheetRef.current?.close();
     }
   }, [placeDetails, isLoading]);
+
+  // Handle call button press
+  const handleCallPress = async () => {
+    if (!placeDetails?.formattedPhoneNumber) {
+      return;
+    }
+
+    try {
+      // Remove all non-numeric characters except +
+      const phoneNumber = placeDetails.formattedPhoneNumber.replace(/[^\d+]/g, '');
+      const url = `tel:${phoneNumber}`;
+
+      const canOpen = await Linking.canOpenURL(url);
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert('Error', 'Unable to make phone calls on this device');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open phone dialer');
+    }
+  };
+
+  // Handle directions button press
+  const handleDirectionsPress = async () => {
+    if (!placeDetails) {
+      return;
+    }
+
+    try {
+      const { lat, lng, name } = placeDetails;
+
+      // Platform-specific maps URLs
+      const url = Platform.select({
+        ios: `maps://?q=${lat},${lng}`,
+        android: `geo:${lat},${lng}?q=${encodeURIComponent(name)}`,
+      });
+
+      if (url) {
+        const canOpen = await Linking.canOpenURL(url);
+        if (canOpen) {
+          await Linking.openURL(url);
+        } else {
+          // Fallback to Google Maps web
+          const webUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+          await Linking.openURL(webUrl);
+        }
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open maps');
+    }
+  };
 
   return (
     <BottomSheet
@@ -104,6 +156,28 @@ export const RestaurantBottomSheet: React.FC<Props> = ({
                 </View>
               </View>
             )}
+
+            {/* Action Buttons */}
+            <View style={styles.actionsContainer}>
+              {placeDetails.formattedPhoneNumber && (
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={handleCallPress}
+                  activeOpacity={0.7}
+                >
+                  <MaterialIcons name="phone" size={20} color="#fff" />
+                  <Text style={styles.actionButtonText}>Call</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleDirectionsPress}
+                activeOpacity={0.7}
+              >
+                <MaterialIcons name="directions" size={20} color="#fff" />
+                <Text style={styles.actionButtonText}>Directions</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         ) : null}
       </View>
@@ -219,5 +293,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    marginBottom: 16,
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#c41e3a',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    gap: 8,
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
