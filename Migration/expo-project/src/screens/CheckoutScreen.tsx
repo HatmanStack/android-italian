@@ -6,6 +6,7 @@ import { useOrderStore } from '../stores/orderStore';
 import { CartItem } from '../components/Cart/CartItem';
 import { OrderItem } from '../types/order.types';
 import { PriceCalculator } from '../utils/priceCalculator';
+import { toast } from '../utils/toast';
 
 type CheckoutScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Checkout'>;
 
@@ -41,7 +42,7 @@ export const CheckoutScreen: React.FC<Props> = ({ navigation }) => {
         style: 'destructive',
         onPress: () => {
           clearCart();
-          Alert.alert('Cart Cleared', 'All items have been removed from your cart.');
+          toast.success('All items have been removed from your cart.', 'Cart Cleared');
         },
       },
     ]);
@@ -49,25 +50,18 @@ export const CheckoutScreen: React.FC<Props> = ({ navigation }) => {
 
   const handlePlaceOrder = useCallback(() => {
     if (items.length === 0) {
-      Alert.alert('Empty Cart', 'Please add items to your cart before placing an order.');
+      toast.error('Please add items to your cart before placing an order.', 'Empty Cart');
       return;
     }
 
     // In a real app, this would send the order to a backend
     // For now, we'll show a success message and clear the cart
-    Alert.alert(
-      'Order Placed',
-      `Your order of ${items.length} item(s) totaling ${PriceCalculator.formatPrice(totalCost)} has been placed!\n\nThank you for your order!`,
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            clearCart();
-            navigation.navigate('Menu');
-          },
-        },
-      ]
+    clearCart();
+    toast.success(
+      `Your order of ${items.length} item(s) totaling ${PriceCalculator.formatPrice(totalCost)} has been placed!`,
+      'Order Placed'
     );
+    navigation.navigate('Menu');
   }, [items.length, totalCost, clearCart, navigation]);
 
   const renderItem = useCallback(
