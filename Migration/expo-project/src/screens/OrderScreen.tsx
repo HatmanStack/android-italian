@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation.types';
 import { Topping } from '../types/order.types';
 import { SizeSelector } from '../components/OrderCustomization/SizeSelector';
+import { ToppingSelector } from '../components/OrderCustomization/ToppingSelector';
 import { PriceCalculator } from '../utils/priceCalculator';
 
 type OrderScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Order'>;
@@ -42,6 +43,14 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
     setToppingsRemoved([]);
   }, []);
 
+  const handleToppingAdd = useCallback((topping: Topping) => {
+    setToppingsAdded((prev) => [...prev, topping]);
+  }, []);
+
+  const handleToppingRemove = useCallback((toppingName: string) => {
+    setToppingsAdded((prev) => prev.filter((t) => t.name !== toppingName));
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -57,6 +66,16 @@ export const OrderScreen: React.FC<Props> = ({ navigation, route }) => {
           item={menuItem}
           selectedSizeIndex={selectedSizeIndex}
           onSizeChange={handleSizeChange}
+        />
+
+        {/* Topping Selector */}
+        <ToppingSelector
+          category={menuItem.category}
+          sizeIndex={selectedSizeIndex}
+          toppingsAdded={toppingsAdded}
+          toppingsRemoved={toppingsRemoved}
+          onToppingAdd={handleToppingAdd}
+          onToppingRemove={handleToppingRemove}
         />
 
         {/* Price Display */}
