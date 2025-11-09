@@ -2,13 +2,14 @@ require('dotenv').config();
 
 export default {
   expo: {
-    name: 'expo-project',
-    slug: 'expo-project',
+    name: 'Italian Restaurant',
+    slug: 'italian-restaurant',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     newArchEnabled: true,
+    description: 'Browse menu, customize your order, and find nearby Italian restaurants',
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
@@ -17,6 +18,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.italian.restaurant',
+      buildNumber: '1.0.0',
       config: {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       },
@@ -29,6 +31,7 @@ export default {
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       package: 'com.italian.restaurant',
+      versionCode: 1,
       config: {
         googleMaps: {
           apiKey: process.env.GOOGLE_MAPS_API_KEY,
