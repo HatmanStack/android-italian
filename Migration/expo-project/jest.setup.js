@@ -74,6 +74,45 @@ jest.mock('react-native-gesture-handler', () => {
   };
 });
 
+// Mock react-native-fast-image
+jest.mock('react-native-fast-image', () => {
+  const React = require('react');
+  const { Image } = require('react-native');
+  return {
+    __esModule: true,
+    default: Image,
+    resizeMode: {
+      contain: 'contain',
+      cover: 'cover',
+      stretch: 'stretch',
+      center: 'center',
+    },
+  };
+});
+
+// Mock @gorhom/bottom-sheet
+jest.mock('@gorhom/bottom-sheet', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  return {
+    __esModule: true,
+    default: React.forwardRef((props, ref) => React.createElement(View, props)),
+  };
+});
+
+// Mock @expo/vector-icons
+jest.mock('@expo/vector-icons', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+  const MockIcon = (props) => React.createElement(Text, props, props.name);
+  return {
+    MaterialIcons: MockIcon,
+    FontAwesome: MockIcon,
+    Ionicons: MockIcon,
+    MaterialCommunityIcons: MockIcon,
+  };
+});
+
 // Silence console warnings during tests
 global.console = {
   ...console,

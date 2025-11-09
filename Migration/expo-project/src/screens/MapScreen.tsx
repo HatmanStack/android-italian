@@ -7,6 +7,7 @@ import { RootStackParamList } from '../types/navigation.types';
 import { UserLocation } from '../types/location.types';
 import { MAP_CONFIG } from '../constants/config';
 import { useLocationStore } from '../stores/locationStore';
+import { RestaurantBottomSheet } from '../components/RestaurantBottomSheet';
 
 type MapScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Map'>;
 
@@ -20,6 +21,9 @@ export const MapScreen: React.FC<Props> = () => {
     setUserLocation,
     fetchNearbyPlaces,
     nearbyPlaces,
+    selectedPlace,
+    selectPlace,
+    clearSelectedPlace,
     loading: placesLoading,
     error: placesError,
     clearError,
@@ -29,6 +33,7 @@ export const MapScreen: React.FC<Props> = () => {
   const [mapRegion, setMapRegion] = useState<Region>(MAP_CONFIG.initialRegion);
   const [loading, setLoading] = useState<boolean>(true);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
+  const [isLoadingPlaceDetails, setIsLoadingPlaceDetails] = useState<boolean>(false);
 
   const requestLocationPermission = useCallback(async () => {
     try {
@@ -84,12 +89,25 @@ export const MapScreen: React.FC<Props> = () => {
   }, [setUserLocation, fetchNearbyPlaces]);
 
   // Marker press handler
-  const handleMarkerPress = useCallback((placeId: string, placeName: string) => {
-    // eslint-disable-next-line no-console
-    console.log('Marker pressed:', placeId);
-    // Phase 3 will open bottom sheet with place details
-    Alert.alert('Restaurant Selected', placeName, [{ text: 'OK' }]);
-  }, []);
+  const handleMarkerPress = useCallback((placeId: string) => {
+    // Set loading state for bottom sheet
+    setIsLoadingPlaceDetails(true);
+    // Fetch place details and open bottom sheet
+    selectPlace(placeId);
+  }, [selectPlace]);
+
+  // Handle close bottom sheet
+  const handleCloseBottomSheet = useCallback(() => {
+    setIsLoadingPlaceDetails(false);
+    clearSelectedPlace();
+  }, [clearSelectedPlace]);
+
+  // Update loading state when selectedPlace changes
+  useEffect(() => {
+    if (selectedPlace !== null) {
+      setIsLoadingPlaceDetails(false);
+    }
+  }, [selectedPlace]);
 
   // Retry handler for error state
   const handleRetry = useCallback(async () => {
@@ -137,7 +155,7 @@ export const MapScreen: React.FC<Props> = () => {
             }}
             title={place.name}
             description={place.openNow ? 'Open Now' : 'Closed'}
-            onPress={() => handleMarkerPress(place.placeId, place.name)}
+            onPress={() => handleMarkerPress(place.placeId)}
           />
         ))}
       </MapView>
@@ -166,6 +184,13 @@ export const MapScreen: React.FC<Props> = () => {
           </Text>
         </View>
       )}
+
+      {/* Restaurant details bottom sheet */}
+      <RestaurantBottomSheet
+        placeDetails={selectedPlace}
+        isLoading={isLoadingPlaceDetails}
+        onClose={handleCloseBottomSheet}
+      />
     </View>
   );
 };
