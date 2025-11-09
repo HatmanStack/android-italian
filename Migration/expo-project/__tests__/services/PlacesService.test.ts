@@ -18,12 +18,12 @@ describe('PlacesService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset singleton instance for each test to clear memory cache
-    // @ts-ignore - Accessing private static property for testing
+    // @ts-expect-error - Accessing private static property for testing
     PlacesService.instance = undefined;
     service = PlacesService.getInstance();
 
     // Setup axios.isAxiosError mock
-    (axios.isAxiosError as jest.Mock) = mockIsAxiosError;
+    (axios.isAxiosError as unknown as jest.Mock) = mockIsAxiosError;
     mockIsAxiosError.mockReturnValue(false); // Default: not an axios error
   });
 
@@ -434,6 +434,7 @@ describe('PlacesService', () => {
         callCount++;
         if (callCount === 1) {
           const error = new Error('Network Error');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (error as any).isAxiosError = true;
           return Promise.reject(error);
         }
@@ -451,6 +452,7 @@ describe('PlacesService', () => {
 
     it('should fail after max retries', async () => {
       const networkError = new Error('Network Error');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (networkError as any).isAxiosError = true;
       mockedAxios.get.mockRejectedValue(networkError);
 

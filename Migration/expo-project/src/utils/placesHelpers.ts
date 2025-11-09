@@ -16,7 +16,7 @@ import { GOOGLE_MAPS_API_KEY } from '../constants/config';
  */
 export function getPlacePhotoUrl(
   photoReference: string,
-  maxWidth: number = 400
+  maxWidth = 400
 ): string {
   const baseUrl = 'https://maps.googleapis.com/maps/api/place/photo';
   const params = new URLSearchParams({

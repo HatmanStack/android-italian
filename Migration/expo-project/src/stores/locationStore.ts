@@ -91,7 +91,6 @@ export const useLocationStore = create<LocationState>()(
       name: 'location-storage', // Storage key
       storage: createJSONStorage(() => AsyncStorage),
       // Only persist nearbyPlaces (partial persistence)
-      partialPersist: true,
       partialize: (state) => ({
         nearbyPlaces: state.nearbyPlaces,
       }),

@@ -40,7 +40,7 @@ class PlacesService {
    */
   private async retryWithBackoff<T>(
     fn: () => Promise<T>,
-    maxRetries: number = 3
+    maxRetries = 3
   ): Promise<T> {
     let lastError: Error;
 
@@ -68,6 +68,7 @@ class PlacesService {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     throw lastError!;
   }
 
@@ -82,7 +83,7 @@ class PlacesService {
   public async getNearbyRestaurants(
     lat: number,
     lng: number,
-    radius: number = 10000
+    radius = 10000
   ): Promise<NearbyPlace[]> {
     try {
       const response = await this.retryWithBackoff(async () => {
@@ -100,6 +101,7 @@ class PlacesService {
 
       // Parse response to NearbyPlace array
       const results = response.data.results || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return results.map((place: any) => ({
         placeId: place.place_id,
         name: place.name,
@@ -133,6 +135,7 @@ class PlacesService {
   public async getPlaceDetails(placeId: string): Promise<PlaceDetails> {
     // Check Tier 1: In-memory cache
     if (this.cache.has(placeId)) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return this.cache.get(placeId)!;
     }
 

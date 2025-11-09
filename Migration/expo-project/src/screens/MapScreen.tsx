@@ -81,10 +81,11 @@ export const MapScreen: React.FC<Props> = () => {
         [{ text: 'OK' }]
       );
     }
-  }, []);
+  }, [setUserLocation, fetchNearbyPlaces]);
 
   // Marker press handler
   const handleMarkerPress = useCallback((placeId: string, placeName: string) => {
+    // eslint-disable-next-line no-console
     console.log('Marker pressed:', placeId);
     // Phase 3 will open bottom sheet with place details
     Alert.alert('Restaurant Selected', placeName, [{ text: 'OK' }]);
