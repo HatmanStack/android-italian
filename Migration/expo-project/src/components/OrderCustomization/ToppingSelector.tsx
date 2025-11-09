@@ -26,7 +26,7 @@ export const ToppingSelector: React.FC<Props> = ({
   category,
   sizeIndex,
   toppingsAdded,
-  toppingsRemoved,
+  toppingsRemoved: _toppingsRemoved,
   onToppingAdd,
   onToppingRemove,
 }) => {

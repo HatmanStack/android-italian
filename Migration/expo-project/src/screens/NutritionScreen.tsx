@@ -24,7 +24,7 @@ export const NutritionScreen: React.FC<Props> = ({ route }) => {
           <Text style={styles.notFoundIcon}>📊</Text>
           <Text style={styles.notFoundTitle}>Nutrition Data Not Available</Text>
           <Text style={styles.notFoundSubtitle}>
-            We don't have nutrition information for "{itemName}" at this time.
+            We don&apos;t have nutrition information for &quot;{itemName}&quot; at this time.
           </Text>
         </View>
       </View>

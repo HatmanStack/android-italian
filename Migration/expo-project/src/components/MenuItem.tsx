@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, GestureResponderEvent } from 'react-native';
 import { MenuItem as MenuItemType } from '../types/menu.types';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const MenuItem: React.FC<Props> = ({ item, onPress, onNutritionPress }) => {
-  const handleNutritionPress = (e: any) => {
+  const handleNutritionPress = (e: GestureResponderEvent) => {
     e.stopPropagation();
     onNutritionPress?.(item.title);
   };

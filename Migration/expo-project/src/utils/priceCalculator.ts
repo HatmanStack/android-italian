@@ -144,7 +144,7 @@ export class PriceCalculator {
     basePrice: number,
     toppingsAdded: Topping[],
     toppingsRemoved: Topping[] = [],
-    crustPrice: number = 0
+    crustPrice = 0
   ): number {
     const toppingsAddedCost = toppingsAdded.reduce((sum, t) => sum + t.price, 0);
     const toppingsRemovedCost = toppingsRemoved.reduce((sum, t) => sum + t.price, 0);
